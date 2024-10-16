@@ -41,10 +41,13 @@ app.post('/login', async (req, res) => {
       } else {
         res.status(401).json({ message: 'Invalid email or password' });
       }
-    } catch (err) {
-      console.error('Error during login', err);
-      res.status(500).send('Server error during login');
-    }
+    } catch (error) {
+      res.status(500).json({
+          error: 'Login unsucessful',
+          message: error.message,
+          operation: 'POST /login'
+      });
+  }
   });
 
 //TODO: POST /signup - add user to db
@@ -56,10 +59,13 @@ app.post('/signup', async (req, res) => {
       [email, password, location, pronouns, family_structure]
     );
     res.status(201).json({ user: result.rows[0] });
-  } catch (err) {
-    console.error('Error during signup', err);
-    res.status(500).send('Server error during signup');
-  }
+  } catch (error) {
+    res.status(500).json({
+        error: 'Signup unsucessful',
+        message: error.message,
+        operation: 'POST /signup'
+    });
+}
 });
 
 //TODO: PATCH /user/:id - update user info
@@ -72,10 +78,13 @@ app.patch('/user/:id', async (req, res) => {
       [email, location, pronouns, family_structure, id]
     );
     res.status(200).json({ user: result.rows[0] });
-  } catch (err) {
-    console.error('Error during user update', err);
-    res.status(500).send('Server error during user update');
-  }
+  } catch (error) {
+    res.status(500).json({
+        error: 'User update unsucessful',
+        message: error.message,
+        operation: 'PATCH /user/:id'
+    });
+}
 });
 
 //TODO: POST /plan/generate/:id
@@ -90,10 +99,13 @@ app.get('/plan/:id', async (req, res) => {
     } else {
       res.status(404).json({ message: 'Plan not found' });
     }
-  } catch (err) {
-    console.error('Error fetching plan', err);
-    res.status(500).send('Server error during fetching plan');
-  }
+  } catch (error) {
+    res.status(500).json({
+        error: 'Server error fetch user plan',
+        message: error.message,
+        operation: 'GET /plan/:id'
+    });
+}
 });
 
 
