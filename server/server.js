@@ -31,7 +31,7 @@ app.use(express.json());
 // TODO: Use the OAuth routes
 //app.use('/oauth', oauthRoutes);
 
-//TODO: POST /login - verify user info from db
+//POST /login - verify user info from db
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -50,7 +50,7 @@ app.post('/login', async (req, res) => {
   }
   });
 
-//TODO: POST /signup - add user to db
+//POST /signup - add user to db
 app.post('/signup', async (req, res) => {
   const { email, password, location, pronouns, family_structure } = req.body;
   try {
@@ -68,7 +68,7 @@ app.post('/signup', async (req, res) => {
 }
 });
 
-//TODO: PATCH /user/:id - update user info
+//PATCH /user/:id - update user info
 app.patch('/user/:id', async (req, res) => {
   const { id } = req.params;
   const { email, location, pronouns, family_structure } = req.body;
@@ -88,8 +88,55 @@ app.patch('/user/:id', async (req, res) => {
 });
 
 //TODO: POST /plan/generate/:id
+app.post('/plan/generate/:id', async (req, res) => {
+  const { id } = req.params;
+  const { method_choice, donor_preference, known_fertility_issues, timeline } = req.body;
+  try {
+     // get user info from the database
+     const userProfile = await db.query('SELECT * FROM users WHERE user_id = $1', [id]);
+     if (userProfile.rows.length === 0) {
+       return res.status(404).json({ error: 'User not found' });
+     }
+     const user = userProfile.rows[0];
 
-//TODO: GET /plan/:id - get plan by user id
+    // AI inegration
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+          { role: "system", content: "You are a helpful assistant that helps families in the LGBQT+ community with family planning." },
+          {
+              role: "user",
+              content: 
+              `Provide a plan for a family with the following details: 
+                    User's location: ${user.location}, 
+                    Pronouns: ${user.pronouns}, 
+                    Family structure: ${user.family_structure}, 
+                    Method choice: ${method_choice}, 
+                    Donor preference: ${donor_preference}, 
+                    Known fertility issues: ${known_fertility_issues}, 
+                    Timeline: ${timeline}.`,
+          },
+      ],
+  });
+
+  const aiResponse = completion.choices[0].message.content;
+  console.log('AI Response:', aiResponse);
+
+    const result = await db.query(
+      'INSERT INTO conception_plan (user_id, method_choice, donor_preference, known_fertility_issues, timeline, generated_plan ) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [id, method_choice, donor_preference, known_fertility_issues, timeline, aiResponse ]
+    );
+    res.status(201).json({ plan: result.rows[0] });
+  } catch (error) {
+    res.status(500).json({
+        error: 'Plan generation unsucessful',
+        message: error.message,
+        operation: 'POST /plan/generate/:id'
+    });
+}
+});
+
+//GET /plan/:id - get plan by user id
 app.get('/plan/:id', async (req, res) => {
   const { id } = req.params;
   try {
