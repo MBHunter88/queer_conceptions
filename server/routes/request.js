@@ -1,3 +1,4 @@
+//TODO: use 0auth to utilize google login for users
 import express from 'express';
 import dotenv from 'dotenv'; 
 const router = express.Router()

@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import pkg from 'pg';
-import oauthRoutes from './routes/oauth.js';
+//import oauthRoutes from './routes/oauth.js';
 
 //use .env for variables
 dotenv.config();
@@ -36,6 +36,7 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
       const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+      //TODO: If not using 0auth then hash password for direct db storage
       if (result.rows.length > 0 && result.rows[0].password === password) {
         res.status(200).json({ message: 'Login successful', user: result.rows[0] });
       } else {
