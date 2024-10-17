@@ -2,7 +2,7 @@ import React from 'react';
 
 
 const PlanForm = () => {
-    
+
 //TODO: Create form, decide on implementing API call directly in component or setup different file
 //will use placeholders for form so that i can finish client routing setup 
 
@@ -10,7 +10,7 @@ const PlanForm = () => {
     <form className="conception-plan-form">
     
       <label>Method Choice:</label>
-      <input type="text" name="methodChoice" />
+      <input type="checkbox" name="methodChoice" />
 
       <label>Donor Preference:</label>
       <input type="text" name="donorPreference" />
