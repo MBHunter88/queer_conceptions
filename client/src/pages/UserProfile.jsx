@@ -9,6 +9,7 @@ const UserProfile = () => {
         <div className={'user-profile'}>
             <NavBar />
             <h1>Welcome User!</h1>
+
         </div>
     );
 };
