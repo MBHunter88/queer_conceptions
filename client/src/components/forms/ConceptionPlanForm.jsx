@@ -2,7 +2,8 @@ import React from 'react';
 
 
 const PlanForm = () => {
-
+    
+//TODO: Create form, decide on implementing API call directly in component or setup different file
 //will use placeholders for form so that i can finish client routing setup 
 
   return (

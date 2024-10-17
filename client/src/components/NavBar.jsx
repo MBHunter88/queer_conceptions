@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+//TODO: basic styling
 
 const Navbar = () => {
   return (

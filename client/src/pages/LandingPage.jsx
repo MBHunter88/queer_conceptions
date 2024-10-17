@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 
 const LandingPage = () => {
 
+    //TODO: Basic Styling (see FeatureSection component)
 
     return (
         <div className={'landing-page'}>

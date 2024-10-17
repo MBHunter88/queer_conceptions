@@ -4,6 +4,7 @@ import PlanForm from '../components/forms/ConceptionPlanForm';
 
 const ConceptionPlanner = () => {
  
+//TODO: Add info panel
 
     return (
         <div className={'user-profile'}>
