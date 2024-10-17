@@ -1,0 +1,50 @@
+# Node modules directory
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Debugger files
+.vscode/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+
+# Build/temporary directories
+build/
+dist/
+tmp/
+temp/
+
+# Dependency directories
+jspm_packages/
+package-lock.json
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Editor settings
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Git-specific files
+.git/
+
+
