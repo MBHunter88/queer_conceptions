@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
+import { useModal } from '../context/ModalContext';
 
-
-//TODO: set modal visibility
+//TODO: refine form input options
 
 const SignUpModal = () => {
   //state management
@@ -13,7 +13,8 @@ const SignUpModal = () => {
   const [familyStructure, setFamilyStructure] = useState('');
   const [hasChildren, setHasChildren] = useState('')
   const { login } = useUser();
-
+  const { openSignUpModal, isSignUpModalOpen, closeSignUpModal} = useModal()
+  
   // Log user in based on input
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -45,7 +46,7 @@ const SignUpModal = () => {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h3>Login</h3>
+        <h3>Sign-Up</h3>
         <form onSubmit={handleSignup}>
           <label>Email:</label>
           <input
