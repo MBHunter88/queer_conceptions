@@ -8,10 +8,11 @@ const SignUpModal = () => {
   //state management
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [location, setLocation] = useState('');
   const [pronouns, setPronouns] = useState('');
   const [familyStructure, setFamilyStructure] = useState('');
-  const [hasChildren, setHasChildren] = useState('')
+  const [hasChildren, setHasChildren] = useState(false)
   const { login } = useUser();
   const { openSignUpModal, isSignUpModalOpen, closeSignUpModal} = useModal()
   
@@ -27,6 +28,7 @@ const SignUpModal = () => {
         body: JSON.stringify({ 
             email,
             password,
+            name,
             location,
             pronouns,
             family_structure: familyStructure,
@@ -63,6 +65,14 @@ const SignUpModal = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             // required
+          />
+            <label>First Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
           />
             <label>Location:</label>
           <input

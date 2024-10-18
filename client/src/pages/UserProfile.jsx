@@ -14,7 +14,7 @@ const UserProfile = () => {
     return (
         <div className={'user-profile'}>
             <NavBar />
-            <h1>Welcome User!</h1>
+            <h1>Welcome {user.name}</h1>
             <p>Email: {user.email}</p>
         </div>
     );
