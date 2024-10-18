@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import LoginModal from './LoginModal';
 import { useUser } from '../context/UserContext';
+import SignUpModal from './SignUpModal';
 
 //TODO: basic styling
 //TODO: Implement Modal Buttons
@@ -28,6 +29,7 @@ const Navbar = () => {
           </>
         ) : (
           <>
+            <SignUpModal/>
             <LoginModal/>
           </>
         )}
