@@ -1,9 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import LoginModal from './LoginModal';
+import { useUser } from '../context/UserContext';
 
 //TODO: basic styling
+//TODO: Implement Modal Buttons
 
 const Navbar = () => {
+    const { user, logout } = useUser();
   return (
     <nav className={'landing-page'}>
       <ul>
@@ -16,7 +20,20 @@ const Navbar = () => {
         <li >
           <Link to="/resources">Resource Library</Link>
         </li>
+        <div>
+
+        {user ? (
+          <>
+            <span>Welcome, {user.email}</span>
+          </>
+        ) : (
+          <>
+            <LoginModal/>
+          </>
+        )}
+      </div>
       </ul>
+      
     </nav>
   );
 };
