@@ -1,52 +1,79 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import pkg from 'pg';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 const router = express.Router();
 const { Pool } = pkg;
 const db = new Pool({
-    connectionString: process.env.DATABASE_URI
+  connectionString: process.env.DATABASE_URI
 });
 
+const SALT_ROUNDS = 10;
 
 //POST /login - verify user info from db
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    try {
-      const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
-      //TODO: If not using 0auth then hash password for direct db storage
-      if (result.rows.length > 0 && result.rows[0].password === password) {
-        res.status(200).json({ message: 'Login successful', user: result.rows[0] });
-      } else {
-        res.status(401).json({ message: 'Invalid email or password' });
-      }
-    } catch (error) {
-      res.status(500).json({
-          error: 'Login unsucessful',
-          message: error.message,
-          operation: 'POST /login'
-      });
-  }
-  });
+  const { email, password } = req.body;
 
-//POST /signup - add user to db
-router.post('/signup', async (req, res) => {
-  const { email, password, location, pronouns, family_structure, has_children } = req.body;
   try {
-    const result = await db.query(
-      'INSERT INTO users (email, password, location, pronouns, family_structure, has_children) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [email, password, location, pronouns, family_structure, has_children]
-    );
-    res.status(201).json({ user: result.rows[0] });
-  } catch (error) {
-    res.status(500).json({
-        error: 'Signup unsucessful',
-        message: error.message,
-        operation: 'POST /signup'
+    //search user by email
+    const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+
+    if (result.rows.length === 0) {
+      // User not found
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    const user = result.rows[0];
+
+    //Compare input password with hashed password in the db
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    //user authenticated successfully
+    res.status(200).json({
+      message: 'Login successful',
+      user: { email: user.email, name: user.name, location: user.location, pronouns: user.pronouns, family_structure: user.family_structure }
     });
-}
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).json({
+      error: 'Login unsuccessful',
+      message: error.message,
+      operation: 'POST /login'
+    });
+  }
 });
+
+//POST /signup - add user to db with hashed password
+router.post('/signup', async (req, res) => {
+  const { email, password, name, location, pronouns, family_structure, has_children } = req.body;
+
+  try {
+    //hash the user password before storing in db
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+    //Insert new user with hashed password
+    const result = await db.query(
+      'INSERT INTO users (email, password, name, location, pronouns, family_structure, has_children) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [email, hashedPassword, name, location, pronouns, family_structure, has_children]
+    );
+
+    res.status(201).json({ message: 'User created successfully', user: { email: result.rows[0].email } });
+  } catch (error) {
+    console.error('Error signing up user:', error);
+    res.status(500).json({
+      error: 'Signup unsuccessful',
+      message: error.message,
+      operation: 'POST /signup'
+    });
+  }
+});
+
 
 //PATCH /user/:id - update user info
 router.patch('/user/:id', async (req, res) => {
@@ -67,4 +94,4 @@ router.patch('/user/:id', async (req, res) => {
 }
 });
 
-export default router
+export default router;
