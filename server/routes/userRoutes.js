@@ -37,7 +37,20 @@ router.post('/login', async (req, res) => {
     //user authenticated successfully
     res.status(200).json({
       message: 'Login successful',
-      user: { email: user.email, name: user.name, location: user.location, pronouns: user.pronouns, family_structure: user.family_structure }
+      user: { 
+        email: user.email, 
+        name: user.name, 
+        location: user.location, 
+        pronouns: user.pronouns, 
+        age: user.age,
+        family_structure: user.family_structure,
+        has_partner: user.has_partner,
+        partner_name: user.partner_name,
+        partner_pronouns: user.partner_pronouns,
+        partner_identifies_as: user.partner_identifies_as,
+        partner_age: user.partner_age
+      
+      }
     });
   } catch (error) {
     console.error('Error logging in user:', error);
@@ -51,7 +64,21 @@ router.post('/login', async (req, res) => {
 
 //POST /signup - add user to db with hashed password
 router.post('/signup', async (req, res) => {
-  const { email, password, name, location, pronouns, family_structure, has_children } = req.body;
+  const { 
+    email,
+    password,
+    name,
+    location,
+    pronouns,
+    age,
+    family_structure,
+    has_partner,
+    partner_name,
+    partner_pronouns,
+    partner_identifies_as,
+    partner_age
+  
+  } = req.body;
 
   try {
     //hash the user password before storing in db
@@ -59,8 +86,8 @@ router.post('/signup', async (req, res) => {
 
     //Insert new user with hashed password
     const result = await db.query(
-      'INSERT INTO users (email, password, name, location, pronouns, family_structure, has_children) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-      [email, hashedPassword, name, location, pronouns, family_structure, has_children]
+      'INSERT INTO users (email, password, name, location, pronouns, age, family_structure, has_parnter, partner_name, partner_pronouns, partner_identifies_as, partner_age) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *',
+      [email, hashedPassword, name, location, pronouns, age, family_structure, has_partner, partner_name, partner_pronouns, partner_identifies_as, partner_age]
     );
 
     res.status(201).json({ message: 'User created successfully', user: { email: result.rows[0].email } });
@@ -87,11 +114,11 @@ router.patch('/user/:id', async (req, res) => {
     res.status(200).json({ user: result.rows[0] });
   } catch (error) {
     res.status(500).json({
-        error: 'User update unsucessful',
-        message: error.message,
-        operation: 'PATCH /user/:id'
+      error: 'User update unsucessful',
+      message: error.message,
+      operation: 'PATCH /user/:id'
     });
-}
+  }
 });
 
 export default router;
