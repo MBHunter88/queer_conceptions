@@ -86,8 +86,8 @@ router.post('/signup', async (req, res) => {
 
     //Insert new user with hashed password
     const result = await db.query(
-      'INSERT INTO users (email, password, name, location, pronouns, age, family_structure, has_parnter, partner_name, partner_pronouns, partner_identifies_as, partner_age) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *',
-      [email, hashedPassword, name, location, pronouns, age, family_structure, has_partner, partner_name, partner_pronouns, partner_identifies_as, partner_age]
+      'INSERT INTO users (email, password, name, location, pronouns, age, family_structure, has_partner, partner_name, partner_pronouns, partner_age) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *',
+      [email, hashedPassword, name, location, pronouns, age, family_structure, has_partner, partner_name, partner_pronouns, partner_age]
     );
 
     res.status(201).json({ message: 'User created successfully', user: { email: result.rows[0].email } });
