@@ -63,15 +63,15 @@ const SignUpModal = () => {
   const familyPlanOptions = hasPartner
   ? [
       {
-        value: 'Both partners are able and willing to be gestational carrier',
+        value: 'Both partners are willing and/or able to be gestational carrier',
         label: <span>We are both able and willing to be gestational carriers</span>,
       },
       {
-        value: 'Couple (one partner able to carry a pregnancy)',
+        value: 'Couple (one partner is willing and/or able to be gestational carrier)',
         label: <span>One of us is able and willing to be a gestational carrier</span>,
       },
       {
-        value: 'Couple (neither partner able to carry a pregnancy)',
+        value: 'Couple (neither partner willing nor able to be gestational carrier)',
         label: <span>Neither of us are able or willing to be gestational carriers</span>,
       },
       {

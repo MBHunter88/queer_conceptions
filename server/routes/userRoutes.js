@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import pkg from 'pg';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { verifyToken } from '../middleware/jwtMiddleware'
 
 dotenv.config();
 const router = express.Router();
@@ -11,6 +13,7 @@ const db = new Pool({
 });
 
 const SALT_ROUNDS = 10;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 //POST /login - verify user info from db
 router.post('/login', async (req, res) => {
@@ -34,9 +37,16 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    //user authenticated successfully
+ //user authenticated successfully - create token
+    const token = jwt.sign(
+      { userId: user.user_id, email: user.email }, 
+      JWT_SECRET, 
+      { expiresIn: '1h' } 
+    );
+
     res.status(200).json({
       message: 'Login successful',
+      token,
       user: { 
         email: user.email, 
         name: user.name, 
@@ -47,7 +57,6 @@ router.post('/login', async (req, res) => {
         has_partner: user.has_partner,
         partner_name: user.partner_name,
         partner_pronouns: user.partner_pronouns,
-        partner_identifies_as: user.partner_identifies_as,
         partner_age: user.partner_age
       
       }
@@ -75,7 +84,6 @@ router.post('/signup', async (req, res) => {
     has_partner,
     partner_name,
     partner_pronouns,
-    partner_identifies_as,
     partner_age
   
   } = req.body;
@@ -103,10 +111,14 @@ router.post('/signup', async (req, res) => {
 
 
 //PATCH /user/:id - update user info
-router.patch('/user/:id', async (req, res) => {
+router.patch('/user/:id', verifyToken, async (req, res) => {
   const { id } = req.params;
   const { email, location, pronouns, family_structure } = req.body;
   try {
+    //make sure user can only edit own profile
+    if (req.user.userId !== parseInt(id)) {
+      return res.status(403).json({message: "Unauthorized to update"})
+    }
     const result = await db.query(
       'UPDATE users SET email = $1, location = $2, pronouns = $3, family_structure = $4 WHERE user_id = $5 RETURNING *',
       [email, location, pronouns, family_structure, id]

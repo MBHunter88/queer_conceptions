@@ -8,9 +8,9 @@ import { Button, Modal, Form, Input } from 'antd';
 to pass values directly into handleLogin */
 
 const LoginModal = () => {
-//useContext for user and modal
+  //useContext for user and modal
   const { login } = useUser();
-  const {isLoginModalOpen, closeLoginModal} = useModal();
+  const { isLoginModalOpen, closeLoginModal } = useModal();
 
   // Log user in based on input
   const handleLogin = async (values) => {
@@ -26,6 +26,8 @@ const LoginModal = () => {
       const data = await response.json();
 
       if (response.ok) {
+        // Store the JWT token in local storage
+        localStorage.setItem('token', data.token);
         console.log('Login successful:', data);
         // Save user data and modal state to context
         login(data.user);
@@ -43,7 +45,7 @@ const LoginModal = () => {
       title="Login"
       open={isLoginModalOpen}
       onCancel={closeLoginModal}
-      footer={null} 
+      footer={null}
     >
       <Form onFinish={handleLogin}>
         <Form.Item
