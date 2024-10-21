@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import pkg from 'pg';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { verifyToken } from '../middleware/jwtMiddleware'
+import verifyToken from '../middleware/jwtMiddleware.js'
 
 dotenv.config();
 const router = express.Router();
