@@ -15,7 +15,10 @@ export const UserProvider = ({ children }) => {
 
   // Log out the current user
   const logout = () => {
+    const confirmed = window.confirm('Are you sure you want to log out?');
+    if (confirmed) {
     setUser(null);
+  }
   };
 
   return (
