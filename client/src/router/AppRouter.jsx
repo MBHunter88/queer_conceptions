@@ -3,10 +3,12 @@ import LandingPage from '../pages/LandingPage';
 import UserProfile from '../pages/UserProfile'
 import ResourceLibrary from '../pages/ResourceLibrary';
 import ConceptionPlanner from '../pages/ConceptionPlanner';
+import NavBar from '../components/NavBar';
 
 const AppRouter = () => {
   return (
     <Router>
+       <NavBar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/planner" element={<ConceptionPlanner />} />

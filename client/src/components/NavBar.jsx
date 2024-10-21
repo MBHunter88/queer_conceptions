@@ -23,9 +23,9 @@ const Navbar = () => {
 
   return (
     <>
-    <Header className="navbar">
+    <Header className="navbar" style={{backgroundColor: "white"}}>
       {/* Logo image can go here */}
-      <Menu  mode="horizontal" defaultSelectedKeys={['home']} style={{ lineHeight: '64px' }}>
+      <Menu  mode="horizontal" defaultSelectedKeys={['home']} style={{ lineHeight: '64px'}} theme="light">
         <Menu.Item key="home" icon={<HomeOutlined />}>
         <Link to="/">
           Queer Conceptions
