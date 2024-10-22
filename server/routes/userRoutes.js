@@ -1,16 +1,13 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import pkg from 'pg';
+import db from '../db/db_connections.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import verifyToken from '../middleware/jwtMiddleware.js'
 
 dotenv.config();
 const router = express.Router();
-const { Pool } = pkg;
-const db = new Pool({
-  connectionString: process.env.DATABASE_URI
-});
+
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET;

@@ -7,11 +7,16 @@ import { Button, Modal, Form, Input, Radio, Select, InputNumber } from 'antd';
 const SignUpModal = () => {
  //State to manage if the user has a partner
  const [hasPartner, setHasPartner] = useState(false);
+ const [isCustomPronoun, setIsCustomPronoun] = useState(false);
+  const [customPronoun, setCustomPronoun] = useState('');
   const { login } = useUser();
   const { isSignUpModalOpen, closeSignUpModal} = useModal()
   
   // Log user in based on input
   const handleSignup = async (values) => {
+    if (isCustomPronoun) {
+      values.pronouns = customPronoun;
+    }
     try {
       const response = await fetch(`http://localhost:8080/users/signup`, {
         method: 'POST',
@@ -55,6 +60,15 @@ const SignUpModal = () => {
       lable: <span>Other</span>
     }
   ]
+
+//function to handle custome pronoun change
+  const handlePronounChange = (value) => {
+    if (value === 'other') {
+      setIsCustomPronoun(true);
+    } else {
+      setIsCustomPronoun(false);
+    }
+  };
 
   const handlePartnerChange = (e) => {
     setHasPartner(e.target.value);
@@ -167,10 +181,29 @@ const SignUpModal = () => {
           ]}
         >
           <Select placeholder="Select your pronouns"
+          onChange={handlePronounChange}
           options={pronounOptions} 
           dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }}>
           </Select>
         </Form.Item>
+
+        {isCustomPronoun && (
+          <Form.Item
+            label="Custom Pronouns"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your pronouns!',
+              },
+            ]}
+          >
+            <Input
+              value={customPronoun}
+              onChange={(e) => setCustomPronoun(e.target.value)}
+              placeholder="Enter your pronouns"
+            />
+          </Form.Item>
+        )}
 
         <Form.Item
           label="Age"
