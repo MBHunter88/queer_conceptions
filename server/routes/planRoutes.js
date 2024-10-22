@@ -1,14 +1,10 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import pkg from 'pg';
+import db from '../db/db_connections.js'
 import OpenAI from 'openai';
 
 dotenv.config();
 const router = express.Router();
-const { Pool } = pkg;
-const db = new Pool({
-    connectionString: process.env.DATABASE_URI
-});
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY, 

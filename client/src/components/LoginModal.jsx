@@ -1,37 +1,37 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
+import { useModal } from '../context/ModalContext';
+import { Button, Modal, Form, Input } from 'antd';
 
 
-//TODO: set modal visibility
+/* NOTE: 'Ant Design' form handles the input state with the onFinish attribute 
+to pass values directly into handleLogin */
 
 const LoginModal = () => {
-  //state management
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  //useContext for user and modal
   const { login } = useUser();
+  const { isLoginModalOpen, closeLoginModal } = useModal();
 
   // Log user in based on input
-  const handleLogin = async (e) => {
-    e.preventDefault(); 
-
+  const handleLogin = async (values) => {
     try {
       const response = await fetch('http://localhost:8080/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify(values),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        // Store the JWT token in local storage
+        localStorage.setItem('token', data.token);
         console.log('Login successful:', data);
-        // Save user data to context
+        // Save user data and modal state to context
         login(data.user);
+        closeLoginModal()
       } else {
         console.error('Login failed:', data.message);
       }
@@ -41,30 +41,46 @@ const LoginModal = () => {
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <h3>Login</h3>
-        <form onSubmit={handleLogin}>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <label>Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit">Login</button>
-        </form>
-      </div>
-    </div>
+    <Modal
+      title="Login"
+      open={isLoginModalOpen}
+      onCancel={closeLoginModal}
+      footer={null}
+    >
+      <Form onFinish={handleLogin}>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your email!',
+              type: 'email',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: 'Please input your password!',
+            },
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Login
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 };
 
