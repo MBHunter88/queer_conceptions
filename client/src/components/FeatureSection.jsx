@@ -9,7 +9,7 @@ const FeatureSection = ({ title, description, link }) => {
 //TODO: Decide to wrap section in link to render feature?
 
     return (
-        <div className="feature-section" bordered={false}>
+        <div className="feature-section" >
           <Title level={2}>{title}</Title>
           <Text>{description}</Text>
           <div style={{ marginTop: '20px' }}>

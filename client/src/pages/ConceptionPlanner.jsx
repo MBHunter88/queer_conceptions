@@ -1,5 +1,5 @@
 import React from 'react';
-import PlanForm from '../components/forms/ConceptionPlanForm';
+import PlanForm from '../components/PlanForm';
 import { Typography, Layout, Row, Col, Divider } from 'antd';
 
 const { Content } = Layout;
@@ -8,6 +8,8 @@ const { Title, Text } = Typography;
 const ConceptionPlanner = () => {
 
     //TODO: styling logic for rendering plan results and ability to download to profile 
+    //TODO: Include how the plan is generated, suggests users to use the resource library for more information before completing form.
+    //TODO: Add a disclosure message
 
     return (
         <Layout>
