@@ -44,7 +44,7 @@ const PlanForm = () => {
     };
     console.log("Form data", formData)
     try {
-      const response = await fetch(`http://localhost:8080/plans/generate/${user.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_URL}/plans/generate/${user.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
