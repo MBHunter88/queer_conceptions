@@ -11,16 +11,12 @@ export const UserProvider = ({ children }) => {
 // Set user data after successful login
   const login = (userData) => {
     setUser(userData);  
-    //localStorage.setItem('user', JSON.stringify(userData));
   };
 
   // Log out the current user
   const logout = () => {
     const confirmed = window.confirm('Are you sure you want to log out?');
     if (confirmed) {
-      // Clear user data and token from local storage
-    // localStorage.removeItem('user');
-    // localStorage.removeItem('token');
     setUser(null);
   }
   };
