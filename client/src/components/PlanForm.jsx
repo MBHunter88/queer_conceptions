@@ -159,7 +159,7 @@ const handleGetNewPlan = () => {
 
   return (
     <>
-     {user.plan === null ? (
+     {generatedPlan === null ? (
         <Form onFinish={handleGeneratePlan} >
 
           <Form.Item label="Timeline" name="timeline">
