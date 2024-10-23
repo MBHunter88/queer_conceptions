@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import LoginModal from './LoginModal';
 import { useUser } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 import SignUpModal from './SignUpModal';
 import { useModal } from '../context/ModalContext'
 import { Layout, Menu, Button, Avatar, Space } from 'antd';
@@ -19,8 +20,14 @@ const { Header } = Layout;
 
 const Navbar = () => {
   const { user, logout } = useUser();
+  const navigate = useNavigate();
     const { openSignUpModal, openLoginModal, isSignUpModalOpen, isLoginModalOpen} = useModal();
 
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
   return (
     <>
     <Header className="navbar" style={{backgroundColor: "white"}}>
@@ -43,7 +50,7 @@ const Navbar = () => {
               <Link to="/profile">Profile</Link>
             </Menu.Item>
             <Menu.Item key="logout" icon={<LogoutOutlined />}>
-              <Button type="link" onClick={logout} >
+              <Button type="link" onClick={handleLogout} >
                 Logout
               </Button>
             </Menu.Item>

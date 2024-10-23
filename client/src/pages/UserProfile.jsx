@@ -2,6 +2,7 @@ import React from 'react';
 import NavBar from '../components/NavBar';
 import { useUser } from '../context/UserContext'
 import { Card } from 'antd';
+import GeneratedPlan from '../components/GeneratedPlan';
 
 
 const UserProfile = () => {
@@ -14,7 +15,6 @@ const UserProfile = () => {
 
     return (
         <div className={'user-profile'}>
-            <NavBar />
             <Card
             title="Profile">
             <h2>Welcome {user.name} ({user.pronouns})</h2>
@@ -30,10 +30,11 @@ const UserProfile = () => {
             <p>Partner Identifies As: {user.partner_identifies_as}</p>
             <p>Partner Age: {user.partner_age}</p>
             </Card>
-            <Card type='inner'
-            title='Conception Plan'>
-            <p>{user.generated_plan}</p>
-            </Card>
+           {user.plan && (
+            <GeneratedPlan/>
+           )}
+             
+            
             </Card>
         </div>
     );

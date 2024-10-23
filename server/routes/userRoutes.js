@@ -18,7 +18,13 @@ router.post('/login', async (req, res) => {
 
   try {
     //search user by email
-    const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await db.query(`SELECT users.*, conception_plan.plan_id,  
+              conception_plan.donor_preference, conception_plan.known_fertility_issues, 
+              conception_plan.timeline, conception_plan.generated_plan, conception_plan.status, 
+              conception_plan.date_created, conception_plan.sex_at_birth, conception_plan.partner_sex_at_birth
+       FROM users
+       LEFT JOIN conception_plan ON users.user_id = conception_plan.user_id
+       WHERE users.email = $1`, [email]);
 
     if (result.rows.length === 0) {
       // User not found
@@ -40,23 +46,38 @@ router.post('/login', async (req, res) => {
       JWT_SECRET, 
       { expiresIn: '1h' } 
     );
+    const userResponse = {
+      id: user.user_id,
+      email: user.email,
+      name: user.name,
+      location: user.location,
+      pronouns: user.pronouns,
+      age: user.age,
+      family_structure: user.family_structure,
+      has_partner: user.has_partner,
+      partner_name: user.partner_name,
+      partner_pronouns: user.partner_pronouns,
+      partner_age: user.partner_age,
+      plan: user.plan_id
+        ? {
+            plan_id: user.plan_id,
+            method_choice: user.method_choice,
+            donor_preference: user.donor_preference,
+            known_fertility_issues: user.known_fertility_issues,
+            timeline: user.timeline,
+            generated_plan: user.generated_plan,
+            status: user.status,
+            date_created: user.date_created,
+            sex_at_birth: user.sex_at_birth,
+            partner_sex_at_birth: user.partner_sex_at_birth,
+          }
+        : null,
+    };
 
     res.status(200).json({
       message: 'Login successful',
       token,
-      user: { 
-        email: user.email, 
-        name: user.name, 
-        location: user.location, 
-        pronouns: user.pronouns, 
-        age: user.age,
-        family_structure: user.family_structure,
-        has_partner: user.has_partner,
-        partner_name: user.partner_name,
-        partner_pronouns: user.partner_pronouns,
-        partner_age: user.partner_age
-      
-      }
+      user: userResponse
     });
   } catch (error) {
     console.error('Error logging in user:', error);

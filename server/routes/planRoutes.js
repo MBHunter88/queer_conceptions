@@ -14,7 +14,16 @@ const openai = new OpenAI({
 //POST /plan/generate/:id
 router.post('/generate/:id', async (req, res) => {
     const { id } = req.params;
-    const { method_choice, donor_preference, known_fertility_issues, timeline } = req.body;
+    const { method_choice, 
+      donor_preference, 
+      selected_fertility_issues, 
+      timeline, 
+      sex_at_birth, 
+      known_fertility_issues, 
+      using_donor, 
+      partner_sex_at_birth } = req.body;
+    
+  
     try {
        // get user info from the database
        const userProfile = await db.query('SELECT * FROM users WHERE user_id = $1', [id]);
@@ -24,33 +33,55 @@ router.post('/generate/:id', async (req, res) => {
        const user = userProfile.rows[0];
   
       // AI inegration
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-            { role: "system", content: "You are a helpful assistant that helps families in the LGBQT+ community with family planning." },
-            {
-                role: "user",
-                content: 
-                `Provide a plan for a family with the following details: 
-                      User's location: ${user.location}, 
-                      Pronouns: ${user.pronouns}, 
-                      Family structure: ${user.family_structure}, 
-                      Method choice: ${method_choice}, 
-                      Donor preference: ${donor_preference}, 
-                      Known fertility issues: ${known_fertility_issues}, 
-                      Timeline: ${timeline}.`,
-            },
-        ],
-    });
+    //   const completion = await openai.chat.completions.create({
+    //     model: "gpt-4o",
+    //     messages: [
+    //         { role: "system", content: "You are a helpful assistant that helps families in the LGBQT+ community with family planning." },
+    //         {
+    //             role: "user",
+    //             content: `
+    //                  Provide a plan for a family with the following details: 
+    //                 User's location: ${user.location || 'not specified'},
+    //         Pronouns: ${user.pronouns || 'not specified'},
+    //         Family structure: ${user.family_structure || 'not specified'},
+    //         Sex assigned at birth: ${sex_at_birth || 'not specified'},
+    //         Partner sex assigned at birth: ${partner_sex_at_birth || 'not specified'},
+    //         Method choice: ${method_choice},
+    //         Donor preference: ${donor_preference || 'not specified'},
+    //         Using donor: ${using_donor || 'not specified'},
+    //         Known fertility issues: ${known_fertility_issues || 'not specified'},
+    //         Selected fertility issues: ${selected_fertility_issues || 'not specified'},
+    //         Timeline: ${timeline || 'not specified'}`
+    //         },
+    //     ],
+    // });
   
-    const aiResponse = completion.choices[0].message.content;
+    const aiResponse = `
+    Based on the provided details, here is your conception plan:
+
+    Location: ${user.location || 'not specified'},
+    Pronouns: ${user.pronouns || 'not specified'},
+    Family structure: ${user.family_structure || 'not specified'},
+    Method choice: ${method_choice},
+    Donor preference: ${donor_preference || 'not specified'},
+    Known fertility issues: ${known_fertility_issues || 'not specified'},
+    Timeline: ${timeline || 'not specified'}.
+
+    Suggested next steps include consulting with a fertility specialist to determine the most suitable conception method and considering counseling if using a donor. For further assistance, visit the resource library.
+    `;
+    //const aiResponse = completion.choices[0].message.content;
     //TODO: Remove debug line once response prompt is finalized 
     //console.log('AI Response:', aiResponse);
   
       const result = await db.query(
-        'INSERT INTO conception_plan (user_id, method_choice, donor_preference, known_fertility_issues, timeline, generated_plan ) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [id, method_choice, donor_preference, known_fertility_issues, timeline, aiResponse ]
-      );
+       `INSERT INTO conception_plan 
+      (user_id, method_choice, donor_preference, selected_fertility_issues, timeline, sex_at_birth, 
+       known_fertility_issues, using_donor, partner_sex_at_birth, generated_plan)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+      [id, method_choice, donor_preference, selected_fertility_issues, timeline, sex_at_birth,
+      known_fertility_issues, using_donor, partner_sex_at_birth, aiResponse]
+    );
+
       res.status(201).json({ plan: result.rows[0] });
     } catch (error) {
       res.status(500).json({
