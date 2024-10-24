@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
 
     if (result.rows.length === 0) {
       // User not found
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid email' });
     }
 
     const user = result.rows[0];
@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid password' });
     }
 
  //user authenticated successfully - create token

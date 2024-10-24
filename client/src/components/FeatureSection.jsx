@@ -6,7 +6,7 @@ const { Title, Text } = Typography;
 
 const FeatureSection = ({ title, description, link }) => {
 
-//TODO: Decide to wrap section in link to render feature?
+
 
     return (
         <div className="feature-section" >
