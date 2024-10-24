@@ -18,7 +18,7 @@ const SignUpModal = () => {
       values.pronouns = customPronoun;
     }
     try {
-      const response = await fetch(`http://localhost:8080/users/signup`, {
+      const response = await fetch(`${import.meta.env.VITE_URL}/users/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
