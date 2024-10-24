@@ -3,7 +3,7 @@ services:
     plan: free
     type: web
     env: node
-    repo: git@github.com:MBHunter88/queer_conceptions.git
+    repo: https://github.com/MBHunter88/queer_conceptions.git
     buildCommand: cd client && npm install && npm run build && cd ../server && npm install
     startCommand: cd server && node server.js
     envVars:
