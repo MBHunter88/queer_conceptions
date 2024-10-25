@@ -8,24 +8,28 @@ const PlanForm = () => {
   const [usingDonor, setUsingDonor] = useState(false);
   const [knownFertilityIssues, setKnownFertilityIssues] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState(null);
+  const [showForm, setShowForm] = useState(false)
   const { user, setUser } = useUser();
   const navigate = useNavigate();
-  const hasWarnedRef = useRef(false);
+  //const hasWarnedRef = useRef(false);
 
   //user must be logged in to generate plan
-  useEffect(() => {
-    if (!user && !hasWarnedRef.current) {
-      hasWarnedRef.current = true; 
-      // Show warning modal
-      Modal.warning({
-        title: 'Login Required',
-        content: 'Please sign up or login to generate your conception plan.',
-        onOk: () => {
-          navigate('/');
-        },
-      });
-    }
-  }, [user, navigate]);
+ 
+    const handleShowForm = () => {
+      if (!user) {
+        // Show warning modal if the user is not logged in
+        Modal.warning({
+          title: 'Login Required',
+          content: 'Please sign up or login to generate your conception plan.',
+          onOk: () => {
+            navigate('/');
+          },
+        });
+      } else {
+        setShowForm(true);
+      }
+    };
+
  
  
 
@@ -153,13 +157,30 @@ const handleGetNewPlan = () => {
     ...prevUser,
     plan: null,
   }));
+  setGeneratedPlan(null);
+  setShowForm(false);
   navigate('/planner')
   console.log("User plan details:", user.plan)
 }
 
   return (
     <>
-     {generatedPlan === null ? (
+    
+      {user?.plan && !showForm && (
+        <>
+          <Button type="primary" onClick={handleGetNewPlan}>
+            Get New Plan
+          </Button>
+          <GeneratedPlan plan={user.plan} /> <br />
+        </>
+      )}
+      
+       {!showForm && !user?.plan && (
+        <Button type="primary" onClick={handleShowForm}>
+          Start Conception Plan
+        </Button>
+      )}
+     {showForm && !generatedPlan && user && (
         <Form onFinish={handleGeneratePlan} >
 
           <Form.Item label="Timeline" name="timeline">
@@ -274,11 +295,14 @@ const handleGetNewPlan = () => {
           <Button type='primary' htmlType='submit'>Generate Plan</Button>
 
         </Form>
-      ) : (
-        <><GeneratedPlan plan={user.plan} /> <br/>
-        <Button type="primary" onClick={handleGetNewPlan}>
+      )}
+      {generatedPlan && (
+        <>
+          <GeneratedPlan plan={user?.plan} /> <br />
+          <Button type="primary" onClick={handleGetNewPlan}>
             Get New Plan
-          </Button></>
+          </Button>
+        </>
       )}
     </>
   );
