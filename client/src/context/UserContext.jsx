@@ -21,6 +21,15 @@ export const UserProvider = ({ children }) => {
   }
   };
 
+   // Update localStorage whenever user data changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
+
   return (
     <UserContext.Provider value={{ user, login, logout, setUser}}>
       {children}

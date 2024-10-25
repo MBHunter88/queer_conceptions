@@ -1,73 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
-import { useModal } from '../context/ModalContext';
-import { Button, Modal, Form, Input, Radio, Select, InputNumber } from 'antd';
+import { Button, Modal, Form, Input, Radio, Select, InputNumber, Space } from 'antd';
 
-
-const SignUpModal = () => {
- //State to manage if the user has a partner
- const [hasPartner, setHasPartner] = useState(false);
- const [isCustomPronoun, setIsCustomPronoun] = useState(false);
+const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen, closeSignUpModal }) => {
+  // State management
+  const [hasPartner, setHasPartner] = useState(false);
+  const [isCustomPronoun, setIsCustomPronoun] = useState(false);
   const [customPronoun, setCustomPronoun] = useState('');
-  const { login } = useUser();
-  const { isSignUpModalOpen, closeSignUpModal} = useModal()
-  
-  // Log user in based on input
-  const handleSignup = async (values) => {
+  const { login, setUser, user } = useUser();
+  const [form] = Form.useForm(); // Create form instance
+
+  // Set initial values in the form if in edit mode
+  useEffect(() => {
+    if (isEditMode && initialValues) {
+      form.setFieldsValue(initialValues);
+      setHasPartner(initialValues.has_partner);
+      if (initialValues.pronouns === 'other') {
+        setIsCustomPronoun(true);
+        setCustomPronoun(initialValues.customPronoun || '');
+      }
+    }
+  }, [isEditMode, initialValues, form]);
+
+  // Log user in or update based on input
+  const handleSubmit = async (values) => {
     if (isCustomPronoun) {
       values.pronouns = customPronoun;
     }
+
+    const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Session expired, please log in again.');
+    return;
+  }
+
     try {
-      const response = await fetch(`${import.meta.env.VITE_URL}/users/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
+      let response;
+      
+      if (isEditMode) {
+        // PATCH request for editing the profile
+        response = await fetch(`${import.meta.env.VITE_URL}/users/update/${initialValues.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(values),
+        });
+      } else {
+        // POST request for signing up
+        response = await fetch(`${import.meta.env.VITE_URL}/users/signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
+      }
 
       if (response.ok) {
-        const newUser = await response.json();
-        login(newUser.user);
+        const updatedUser = await response.json();
+        console.log('Updated User:', updatedUser);
+      
+        if (isEditMode) {
+          setUser((prevUser) => ({
+            ...prevUser, 
+            ...updatedUser.user,  
+          }));
+        //TODO: replace with modal to keep consistency
+          alert('Profile updated successfully!');
+        } else {
+          login(updatedUser);
+        }
         closeSignUpModal();
       } else {
-        console.error('Signup failed', response.statusText)
+        console.error('Operation failed', response.statusText);
       }
     } catch (error) {
-      console.error('Error adding new user:', error);
+      console.error('Error processing request:', error);
     }
   };
 
-  const pronounOptions = [
-    {
-      value: 'she/her/hers',
-      lable: <span>she/her/hers</span>
-    },
-    {
-      value: 'he/him/his',
-      lable: <span>he/him/his</span>
-    },
-    {
-      value: 'they/them/theirs',
-      lable: <span>they/them/theirs</span>
-    },
-    {
-      value: 'xe/xir/xirs',
-      lable: <span>xe/xir/xirs</span>
-    },
-    {
-      value: 'other',
-      lable: <span>Other</span>
-    }
-  ]
 
-//function to handle custome pronoun change
+  // Pronoun options
+  const pronounOptions = [
+    { value: 'she/her/hers', label: <span>she/her/hers</span> },
+    { value: 'he/him/his', label: <span>he/him/his</span> },
+    { value: 'they/them/theirs', label: <span>they/them/theirs</span> },
+    { value: 'xe/xir/xirs', label: <span>xe/xir/xirs</span> },
+    { value: 'other', label: <span>Other</span> },
+  ];
+
+  // Handle custom pronoun change
   const handlePronounChange = (value) => {
-    if (value === 'other') {
-      setIsCustomPronoun(true);
-    } else {
-      setIsCustomPronoun(false);
-    }
+    setIsCustomPronoun(value === 'other');
   };
 
   const handlePartnerChange = (e) => {
@@ -75,7 +101,7 @@ const SignUpModal = () => {
   };
 
   const familyPlanOptions = hasPartner
-  ? [
+    ? [
       {
         value: 'Both partners are willing and/or able to be gestational carrier',
         label: <span>We are both able and willing to be gestational carriers</span>,
@@ -93,7 +119,7 @@ const SignUpModal = () => {
         label: <span>We are not sure</span>,
       },
     ]
-  : [
+    : [
       {
         value: 'Single, planning to be gestational carrier',
         label: <span>Single, planning to be the gestational carrier</span>,
@@ -110,13 +136,13 @@ const SignUpModal = () => {
 
   return (
     <Modal
-      title="Sign Up"
+      title={isEditMode ? "Edit Profile" : "Sign Up"}
       open={isSignUpModalOpen}
       onCancel={closeSignUpModal}
       footer={null}
       width={800}
     >
-      <Form onFinish={handleSignup}>
+      <Form form={form} onFinish={handleSubmit} layout="vertical">
         <Form.Item
           label="Email"
           name="email"
@@ -131,18 +157,20 @@ const SignUpModal = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your password!',
-            },
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
+        {!isEditMode && (
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your password!',
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+        )}
 
         <Form.Item
           label="First Name"
@@ -180,11 +208,12 @@ const SignUpModal = () => {
             },
           ]}
         >
-          <Select placeholder="Select your pronouns"
-          onChange={handlePronounChange}
-          options={pronounOptions} 
-          dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }}>
-          </Select>
+          <Select
+            placeholder="Select your pronouns"
+            onChange={handlePronounChange}
+            options={pronounOptions}
+            dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }}
+          />
         </Form.Item>
 
         {isCustomPronoun && (
@@ -259,10 +288,11 @@ const SignUpModal = () => {
                 },
               ]}
             >
-              <Select placeholder="Select your partner's pronouns"
-               options={pronounOptions} 
-               dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }}>
-              </Select>
+              <Select
+                placeholder="Select your partner's pronouns"
+                options={pronounOptions}
+                dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }}
+              />
             </Form.Item>
 
             <Form.Item
@@ -275,12 +305,12 @@ const SignUpModal = () => {
                 },
               ]}
             >
-             <InputNumber />
+              <InputNumber />
             </Form.Item>
           </>
         )}
 
-<Form.Item
+        <Form.Item
           label="Family Plan"
           name="family_structure"
           rules={[
@@ -292,15 +322,21 @@ const SignUpModal = () => {
         >
           <Select
             placeholder="Select your family-building plan"
-            options={familyPlanOptions} 
+            options={familyPlanOptions}
             dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }}
           />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Sign Up
-          </Button>
+          <Space>
+            <Button type="primary" htmlType="submit">
+              {isEditMode ? "Update Profile" : "Sign Up"}
+            </Button>
+
+            <Button  onClick={closeSignUpModal}>
+              Cancel
+            </Button>
+          </Space>
         </Form.Item>
       </Form>
     </Modal>
