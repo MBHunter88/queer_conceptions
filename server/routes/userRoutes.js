@@ -151,4 +151,20 @@ router.patch('/user/:id', verifyToken, async (req, res) => {
   }
 });
 
+// DELETE: user/:id - delete user
+router.delete('/user/:id', verifyToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query('DELETE FROM users WHERE id=$1', [id]);
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Unable to delete user',
+      message: error.message,
+      operation: 'DELETE /user/:id'
+    });
+  }
+});
+
+
 export default router;
