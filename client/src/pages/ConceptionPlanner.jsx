@@ -1,8 +1,9 @@
 import React from 'react';
 import PlanForm from '../components/PlanForm';
 import { Typography, Layout, Row, Col, Divider } from 'antd';
+import { Link } from 'react-router-dom';
 
-const { Content } = Layout;
+const { Content, Footer } = Layout;
 const { Title, Text } = Typography;
 
 const ConceptionPlanner = () => {
@@ -30,6 +31,14 @@ const ConceptionPlanner = () => {
                 <Divider />
                 <PlanForm />
             </Content>
+            <Footer>
+            <p>
+    Learn more about our 
+    <Link to="/privacy-policy" style={{ marginLeft: '5px', color: '#1890ff' }}>
+      Privacy Policy
+    </Link>.
+  </p>
+            </Footer>
         </Layout>
      
     );

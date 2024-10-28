@@ -3,6 +3,7 @@ import { useUser } from '../context/UserContext';
 import { Button, Form, Input, Radio, Popover, Checkbox, Select, Modal } from 'antd';
 import { useNavigate } from 'react-router-dom'
 import GeneratedPlan from './GeneratedPlan';
+import { Link } from 'react-router-dom';
 
 const PlanForm = () => {
   const [usingDonor, setUsingDonor] = useState(false);
@@ -168,10 +169,14 @@ const handleDisclosure = () => {
     title: 'Third-Party Data Disclosure',
     content: (
       <>
-        Your information is being sent to a third party. Are you sure you want to continue?
+         Your information is being sent to a third party (OpenAI) for generating your conception plan. 
+         Are you sure you want to continue?
         <br />
         For more details, please see our{' '}
-        <a href="https://example.com/privacy-policy" target="_blank" rel="noopener noreferrer">
+        <a
+          href="/privacy-policy"
+          style={{ marginLeft: '5px', color: '#1890ff' }}
+        >
           Privacy Policy
         </a>.
       </>
