@@ -164,7 +164,7 @@ const handleGetNewPlan = () => {
   console.log("User plan details:", user.plan)
 }
 
-const handleDisclosure = () => {
+const handleDisclosure = (values) => {
   Modal.confirm({
     title: 'Third-Party Data Disclosure',
     content: (
@@ -185,7 +185,7 @@ const handleDisclosure = () => {
     okType: 'danger',
     cancelText: 'No',
     onOk: () => {
-      handleGeneratePlan();
+      handleGeneratePlan(values);
     },
     onCancel: () => {
       console.log('User declined to proceed');
@@ -326,6 +326,15 @@ const handleDisclosure = () => {
 
         </Form>
       )}
+      {generatedPlan && (
+      <div>
+        <h2>Your Generated Conception Plan:</h2>
+        <GeneratedPlan plan={generatedPlan} />
+        <Button type="primary" onClick={handleGetNewPlan}>
+          Get New Plan
+        </Button>
+      </div>
+    )}
     </>
   );
 };
