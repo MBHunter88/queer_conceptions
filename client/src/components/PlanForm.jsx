@@ -127,7 +127,6 @@ const PlanForm = () => {
     <p>...someone who is personally known to the intended parents, such as a friend, family member, or partner.</p>
   )
 
-  //<-----------------------additional event handler functions----------------------->//
  // timeline options
  const timelineOptions = [
   {
@@ -151,6 +150,7 @@ const PlanForm = () => {
     lable: <span>I don't know</span>
   }
  ]
+ //<-----------------------additional event handler functions----------------------->//
 
 const handleGetNewPlan = () => {
   setUser((prevUser) => ({
@@ -161,6 +161,31 @@ const handleGetNewPlan = () => {
   setShowForm(false);
   navigate('/planner')
   console.log("User plan details:", user.plan)
+}
+
+const handleDisclosure = () => {
+  Modal.confirm({
+    title: 'Third-Party Data Disclosure',
+    content: (
+      <>
+        Your information is being sent to a third party. Are you sure you want to continue?
+        <br />
+        For more details, please see our{' '}
+        <a href="https://example.com/privacy-policy" target="_blank" rel="noopener noreferrer">
+          Privacy Policy
+        </a>.
+      </>
+    ),
+    okText: 'Yes',
+    okType: 'danger',
+    cancelText: 'No',
+    onOk: () => {
+      handleGeneratePlan();
+    },
+    onCancel: () => {
+      console.log('User declined to proceed');
+    },
+  });
 }
 
   return (
@@ -181,7 +206,7 @@ const handleGetNewPlan = () => {
         </Button>
       )}
      {showForm && !generatedPlan && user && (
-        <Form onFinish={handleGeneratePlan} >
+        <Form onFinish={handleDisclosure} >
 
           <Form.Item label="Timeline" name="timeline">
             <Select placeholder="When do you plan on starting your conception journey?"
@@ -295,14 +320,6 @@ const handleGetNewPlan = () => {
           <Button type='primary' htmlType='submit'>Generate Plan</Button>
 
         </Form>
-      )}
-      {generatedPlan && (
-        <>
-          <GeneratedPlan plan={user?.plan} /> <br />
-          <Button type="primary" onClick={handleGetNewPlan}>
-            Get New Plan
-          </Button>
-        </>
       )}
     </>
   );
