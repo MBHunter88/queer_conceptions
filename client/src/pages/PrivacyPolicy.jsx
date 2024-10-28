@@ -54,7 +54,11 @@ const PrivacyPolicy = () => {
                 We value your trust and make every effort to protect your privacy.
             </p>
             <p>
-               <h3>Questions or Concerns?</h3> 
+                <h3>Medical & Legal Disclaimer</h3>
+                <p>The information provided by Queer Conceptions is intended to support your family-building journey but does not substitute for professional medical or legal advice.
+                    Please consult a healthcare provider for medical or health-related advice. For questions regarding legal aspects of family planning, please seek professional legal counsel.</p>
+
+                <h3>Questions or Concerns?</h3>
 
                 If you have any questions about how your data is used or wish to learn more, please do not hesitate to contact us at
                 email.exaple.com. We are here to provide you with complete transparency and confidence in our data practices.
@@ -64,7 +68,7 @@ const PrivacyPolicy = () => {
                 You have the right to opt out of sharing your information with OpenAI by choosing not to use the conception plan feature. We will continue to offer other features that do not require third-party data sharing.
 
             </p>
-           
+
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
-import { Button, Modal, Form, Input, Radio, Select, InputNumber, Space } from 'antd';
+import { Button, Modal, Form, Input, Radio, Select, InputNumber, Space, Checkbox } from 'antd';
 
 const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen, closeSignUpModal }) => {
   // State management
@@ -9,6 +9,7 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
   const [customPronoun, setCustomPronoun] = useState('');
   const { login, setUser, user } = useUser();
   const [form] = Form.useForm(); // Create form instance
+  const [acceptedDisclaimer, setAcceptedDisclaimer] = useState(false);
 
   // Set initial values in the form if in edit mode
   useEffect(() => {
@@ -142,6 +143,8 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
       footer={null}
       width={800}
     >
+      <p>Fill out form below to create your user profile.</p>
+
       <Form form={form} onFinish={handleSubmit} layout="vertical">
         <Form.Item
           label="Email"
@@ -327,9 +330,26 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
           />
         </Form.Item>
 
+       {!isEditMode && <Form.Item>
+          <Checkbox
+            checked={acceptedDisclaimer}
+            onChange={(e) => setAcceptedDisclaimer(e.target.checked)}
+          >
+            I understand that Queer Conceptions is not a substitute for professional medical, legal, or financial advice. 
+            All information provided is for guidance and educational purposes only. By signing up, 
+            I agree to the terms outlined in the  <a
+          href="/privacy-policy"
+          style={{ marginLeft: '5px', color: '#1890ff' }}
+        >
+          Privacy Policy
+        </a> and acknowledge the limitations of the provided services.
+          </Checkbox>
+        </Form.Item>
+      }
+
         <Form.Item>
           <Space>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" disabled={!isEditMode && !acceptedDisclaimer}>
               {isEditMode ? "Update Profile" : "Sign Up"}
             </Button>
 

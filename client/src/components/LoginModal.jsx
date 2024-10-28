@@ -47,6 +47,8 @@ const LoginModal = () => {
       onCancel={closeLoginModal}
       footer={null}
     >
+      <p>Please enter your login info below.</p>
+
       <Form onFinish={handleLogin}>
         <Form.Item
           label="Email"
