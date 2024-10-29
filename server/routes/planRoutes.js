@@ -36,58 +36,72 @@ router.post('/generate/:id', async (req, res) => {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant that helps families in the LGBTQ+ community with family planning. Provide all responses in a structured checklist format, similar to the example provided. Each step should include a title, a short timeline, and sub-bullets for actionable steps."
-      },
-      {
-          role: "user",
-          content: `
-              Provide a family planning checklist with only the steps needed based on the following details:
-              {
-                  "timeline": "${timeline || 'not specified'}",
-                  "location": "${user.location || 'not specified'}",
-                  "pronouns": "${user.pronouns || 'not specified'}",
-                  "partner's pronouns": "${user.partner_pronouns || 'not specified'}",
-                  "current family structure": "${user.family_structure || 'not specified'}",
-                  "sex at birth": "${sex_at_birth || 'not specified'}",
-                  "partner's sex at birth": "${partner_sex_at_birth || 'not specified'}",
-                  "conception method choice": "${method_choice || 'not specified'}",
-                  "using donor?": "${using_donor || 'not specified'}",
-                  "donor preference": "${donor_preference || 'not specified'}",
-                  "fertility issues?": "${selected_fertility_issues || 'not specified'}",
-                  "specified fertility issues": "${known_fertility_issues || 'not specified'}"
-              }
-              The response should be a list of actionable steps based on the timeline given and only based on the provided details. Include the legal process for the provided location, the steps involved in the provided method choice, and donor preference. Include additional steps needed if any fertility issues are provided. 
-
-              Please provide the response in the following format:
-
-              **Family Planning Checklist: [Method Choice] with [Donor Preference] ([Timeline])**
-
-              1. **Step Title (Time Frame)**
-                 - Sub-step 1
-                 - Sub-step 2
-
-              Example:
-              **Family Planning Checklist: Reciprocal IVF with Anonymous Donor (6-Month Timeline)**
-              
-              1. **Research and Choose Fertility Clinic (0-1 Month)**
-                 - Identify fertility clinics in [location] experienced in [method choice].
-                 - Schedule consultations to evaluate options and comfort level.
-
-              2. **Medical Evaluation (0-2 Months)**
-                 - Complete fertility assessments, including bloodwork and pelvic exams.
-                 - Disclose known fertility issues to a specialist for additional monitoring.
-
-              3. **Legal Consultation (1-2 Months)**
-                 - Consult an assisted reproduction lawyer in [location] to discuss parental rights.
-                 - Draft and sign agreements for using a [donor preference].
-
-              Respond strictly using the format above, with no introduction or conclusion.
-          `
-      },
+          {
+              role: "system",
+              content: "You are a helpful assistant that helps families in the LGBTQ+ community with family planning. Provide all responses in a structured JSON format without using any code block markers or additional text., containing a family planning checklist."
+          },
+          {
+              role: "user",
+              content: `
+                  Please provide a family planning checklist based on the following details in a structured JSON format:
+                  {
+                      "timeline": "${timeline || 'not specified'}",
+                      "location": "${user.location || 'not specified'}",
+                      "pronouns": "${user.pronouns || 'not specified'}",
+                      "partner's pronouns": "${user.partner_pronouns || 'not specified'}",
+                      "current family structure": "${user.family_structure || 'not specified'}",
+                      "sex at birth": "${sex_at_birth || 'not specified'}",
+                      "partner's sex at birth": "${partner_sex_at_birth || 'not specified'}",
+                      "conception method choice": "${method_choice || 'not specified'}",
+                      "using donor?": "${using_donor || 'not specified'}",
+                      "donor preference": "${donor_preference || 'not specified'}",
+                      "fertility issues?": "${selected_fertility_issues || 'not specified'}",
+                      "specified fertility issues": "${known_fertility_issues || 'not specified'}"
+                  }
+  
+                  The response should be in JSON format with the following structure:
+  
+                  {
+                      "title": "Family Planning Checklist: [Method Choice] with [Donor Preference] ([Timeline])",
+                      "timeline": "[Timeline]",
+                      "steps": [
+                          {
+                              "title": "Step Title (e.g., Research and Choose Fertility Clinic)",
+                              "timeframe": "Time Frame (e.g., 0-1 Month)",
+                              "sub_steps": [
+                                  "Sub-step 1",
+                                  "Sub-step 2"
+                              ]
+                          },
+                          {
+                              "title": "Step Title (e.g., Medical Evaluation)",
+                              "timeframe": "Time Frame (e.g., 0-2 Months)",
+                              "sub_steps": [
+                                  "Sub-step 1",
+                                  "Sub-step 2"
+                              ]
+                          }
+                          // More steps...
+                      ]
+                  }
+  
+                  Ensure that the response strictly follows the JSON format provided above without any code block markers, introduction or conclusion. Only provide the JSON response with no other text or characters.
+              `
+          },
       ],
   });
+  
+  // Example usage:
+  try {
+      const responseText = completion.choices[0].message.content;
+      console.log(responseText)
+      // Since it should be JSON, parse it
+      const plan = JSON.parse(responseText);
+      console.log(plan);
+  } catch (error) {
+      console.error("Error parsing JSON response:", error);
+  }
+  
   
     // MOCK response for testing and developement. 
     // const aiResponse = `
