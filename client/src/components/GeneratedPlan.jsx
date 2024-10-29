@@ -3,7 +3,7 @@ import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Button, Card, Spin } from 'antd';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const GeneratedPlan = () => {
     const { user } = useUser();
@@ -11,22 +11,43 @@ const GeneratedPlan = () => {
     if (!user.plan) {
         return null;
       }
+console.log(user.plan.generated_plan)
+      
+
+
+    //   //destructure the plan data
+      const { title, timeline, steps } = user.plan.generated_plan
+   
 
       return (
-        <div className="generated-plan-container">
-        <h2>Your Personalized Conception Plan</h2>
-        <Card title="Overview:" bordered={false} style={{ marginBottom: '20px' }}>
-          <p><strong>Timeline:</strong> {user.plan.timeline}</p>
-          <p><strong>Conception Method(s):</strong> {user.plan.method_choice}</p>
-          <p><strong>Known Fertility Issues:</strong> {user.plan.known_fertility_issues || 'None'}</p>
-          <p><strong>Donor Preference:</strong> {user.plan.donor_preference || 'Not applicable'}</p>
-          <p><strong>Date Created:</strong> {new Date(user.plan.date_created).toLocaleString()}</p>
-        </Card>
-  
-        {/* Generated Plan in Text Format */}
-        <Card title="Details:" bordered={false}>
-          <p>{user.plan.generated_plan}</p>
-        </Card>
+        <div className="generated-plan-container" style={{ padding: '20px' }}>
+            <Title level={2}>{title}</Title>
+
+            {/* Overview Section */}
+            <Card title="Overview" bordered={false} style={{ marginBottom: '20px' }}>
+                <Paragraph>
+                    <Text strong>Timeline:</Text> {timeline}
+                </Paragraph>
+            </Card>
+
+            {/* Steps Section */}
+            {steps && steps.length > 0 && (
+                <Card title="Detailed Conception Plan" bordered={false}>
+                    {steps.map((step, index) => (
+                        <div key={index} style={{ marginBottom: '20px' }}>
+                            <Title level={4}>Step {index + 1}: {step.title}</Title>
+                            <Text type="secondary">{step.timeframe}</Text>
+                            <ul>
+                                {step.sub_steps.map((subStep, subIndex) => (
+                                    <li key={subIndex}>
+                                        <Paragraph>{subStep}</Paragraph>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </Card>
+            )}
         </div>
       );
 }
