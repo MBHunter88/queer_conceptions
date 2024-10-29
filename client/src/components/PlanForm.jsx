@@ -328,7 +328,6 @@ const handleDisclosure = (values) => {
       )}
       {generatedPlan && (
       <div>
-        <h2>Your Generated Conception Plan:</h2>
         <GeneratedPlan plan={generatedPlan} />
         <Button type="primary" onClick={handleGetNewPlan}>
           Get New Plan

@@ -89,14 +89,9 @@ router.post('/generate/:id', async (req, res) => {
       ],
   });
   
-  // Example usage
-  const response = completion.choices[0].message.content;
-  console.log(response);
-  
-
+    // MOCK response for testing and developement. 
     // const aiResponse = `
     // Based on the provided details, here is your conception plan:
-
     // Location: ${user.location || 'not specified'},
     // Pronouns: ${user.pronouns || 'not specified'},
     // Family structure: ${user.family_structure || 'not specified'},
@@ -107,9 +102,10 @@ router.post('/generate/:id', async (req, res) => {
 
     // Suggested next steps include consulting with a fertility specialist to determine the most suitable conception method and considering counseling if using a donor. For further assistance, visit the resource library.
     // `;
+
+
     const aiResponse = completion.choices[0].message.content;
-    //TODO: Remove debug line once response prompt is finalized 
-    console.log('AI Response:', aiResponse);
+  
 
     const result = await db.query(
       `INSERT INTO conception_plan 

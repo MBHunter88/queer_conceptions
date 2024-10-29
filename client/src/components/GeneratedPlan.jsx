@@ -15,7 +15,7 @@ const GeneratedPlan = () => {
       return (
         <div className="generated-plan-container">
         <h2>Your Personalized Conception Plan</h2>
-        <Card title="Overview" bordered={false} style={{ marginBottom: '20px' }}>
+        <Card title="Overview:" bordered={false} style={{ marginBottom: '20px' }}>
           <p><strong>Timeline:</strong> {user.plan.timeline}</p>
           <p><strong>Conception Method(s):</strong> {user.plan.method_choice}</p>
           <p><strong>Known Fertility Issues:</strong> {user.plan.known_fertility_issues || 'None'}</p>
@@ -24,7 +24,7 @@ const GeneratedPlan = () => {
         </Card>
   
         {/* Generated Plan in Text Format */}
-        <Card title="Detailed Conception Plan" bordered={false}>
+        <Card title="Details:" bordered={false}>
           <p>{user.plan.generated_plan}</p>
         </Card>
         </div>
