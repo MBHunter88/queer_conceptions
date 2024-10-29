@@ -11,7 +11,11 @@ export const UserProvider = ({ children }) => {
  
 // Set user data after successful login
   const login = (userData) => {
-    setUser(userData);  
+    localStorage.setItem('token', userData.token)
+    setUser({
+      ...userData.user,
+      plan: userData.plan,
+    });
   };
 
   // Log out the current user

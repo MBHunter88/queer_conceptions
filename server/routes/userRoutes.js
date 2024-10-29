@@ -128,7 +128,23 @@ router.post('/signup', async (req, res) => {
       [email, hashedPassword, name, location, pronouns, age, family_structure, has_partner, partner_name, partner_pronouns, partner_age]
     );
 
-    res.status(201).json({ message: 'User created successfully', user: { email: result.rows[0].email } });
+    const newUser = result.rows[0]
+
+     // Generate JWT token
+     const token = jwt.sign(
+      {
+        id: newUser.id,
+        email: newUser.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.status(201).json({ 
+      message: 'User created successfully', 
+       user: newUser, 
+       token: token });
+       
   } catch (error) {
     console.error('Error signing up user:', error);
     res.status(500).json({
@@ -173,10 +189,16 @@ router.patch('/update/:id', verifyToken, async (req, res) => {
       ]
     );
     const result = await db.query(
-      `SELECT users.*, conception_plan.plan_id,  
-              conception_plan.donor_preference, conception_plan.known_fertility_issues, 
-              conception_plan.timeline, conception_plan.generated_plan, conception_plan.status, 
-              conception_plan.date_created, conception_plan.sex_at_birth, conception_plan.partner_sex_at_birth
+      `SELECT users.*, 
+              conception_plan.plan_id,  
+              conception_plan.donor_preference,
+              conception_plan.known_fertility_issues, 
+              conception_plan.timeline, 
+              conception_plan.generated_plan,
+              conception_plan.status, 
+              conception_plan.date_created, 
+              conception_plan.sex_at_birth, 
+              conception_plan.partner_sex_at_birth
        FROM users
        LEFT JOIN conception_plan ON users.user_id = conception_plan.user_id
        WHERE users.user_id = $1`, [id]

@@ -71,8 +71,8 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
 
       if (response.ok) {
         const updatedUser = await response.json();
-        console.log('Updated User:', updatedUser);
-      
+        console.log('User:', updatedUser);
+       
         if (isEditMode) {
           setUser((prevUser) => ({
             ...prevUser, 
@@ -80,6 +80,7 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
           }));
           // TODO: replace with modal to keep consistency
           alert('Profile updated successfully!');
+        
         } else {
           login(updatedUser);
         }
