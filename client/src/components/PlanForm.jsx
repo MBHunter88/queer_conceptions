@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../context/UserContext';
-import { Button, Form, Input, Radio, Popover, Checkbox, Select, Modal } from 'antd';
+import { Button, Form, Input, Radio, Popover, Checkbox, Select, Modal, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom'
 import GeneratedPlan from './GeneratedPlan';
 import { Link } from 'react-router-dom';
@@ -11,6 +11,7 @@ const PlanForm = () => {
   const [generatedPlan, setGeneratedPlan] = useState(null);
   const [showForm, setShowForm] = useState(false)
   const { user, setUser } = useUser();
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
   //const hasWarnedRef = useRef(false);
 
@@ -36,6 +37,7 @@ const PlanForm = () => {
 
   //<---------------------External API request-------------------------->//
   const handleGeneratePlan = async (values) => {
+    setLoading(true)
     console.log('Form values:', values);
     //use info from user profile 
     const formData = {
@@ -66,10 +68,13 @@ const PlanForm = () => {
           plan: generatedPlan.plan,
         }));
       } else {
-        console.error('Plan generation failed', response.statusText)
+        const errorResponse = await response.json(); 
+        console.error('Plan generation failed', response.statusText, errorResponse);
       }
     } catch (error) {
       console.error('Error generating plan:', error);
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -152,6 +157,11 @@ const PlanForm = () => {
   }
  ]
  //<-----------------------additional event handler functions----------------------->//
+
+// Check if the plan is loading
+if (loading) {
+  return <Spin tip="Generating your plan, please wait..." />;
+}
 
 const handleGetNewPlan = () => {
   setUser((prevUser) => ({
