@@ -65,8 +65,17 @@ const ResourceLibrary = () => {
                 onChange={(e) => setSearchTerm(e.target.value)} />
             </Form.Item>
           </Form>
-          <Row gutter={[0, 40]} justify="center">
 
+          <Row gutter={[0, 40]} justify="center">
+            <Title level={2}>Resources</Title>
+            <Text>
+              Our Resource Library is here to support you every step of the way on your family-building journey.
+              Explore articles, guides, and helpful tools specifically designed for LGBTQ+ individuals and families.
+              Whether you're looking for medical information, legal guidance, or community support, we've compiled
+              a variety of resources to empower you with the knowledge you need to make informed decisions.
+              Navigate through topics that matter most to you and find the information you need to move forward with confidence.
+
+            </Text>
             {filteredResources.map((resource, index) => (
               <Col span={24} key={index}>
                 <Card className="resource-link" bordered={false}>
