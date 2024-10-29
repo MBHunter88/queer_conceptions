@@ -7,6 +7,8 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
   const [hasPartner, setHasPartner] = useState(false);
   const [isCustomPronoun, setIsCustomPronoun] = useState(false);
   const [customPronoun, setCustomPronoun] = useState('');
+  const [isPartnerCustomPronoun, setPartnerCustomPronoun] = useState(false);
+  const [partnerCustomPronoun, setPartnerCustomPronounValue] = useState('');
   const { login, setUser, user } = useUser();
   const [form] = Form.useForm(); // Create form instance
   const [acceptedDisclaimer, setAcceptedDisclaimer] = useState(false);
@@ -20,20 +22,28 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
         setIsCustomPronoun(true);
         setCustomPronoun(initialValues.customPronoun || '');
       }
+      if (initialValues.partner_pronouns === 'other') {
+        setPartnerCustomPronoun(true);
+        setPartnerCustomPronounValue(initialValues.partnerCustomPronoun || '');
+      }
     }
   }, [isEditMode, initialValues, form]);
 
   // Log user in or update based on input
   const handleSubmit = async (values) => {
+    // Assign custom pronouns if needed
     if (isCustomPronoun) {
       values.pronouns = customPronoun;
     }
+    if (isPartnerCustomPronoun) {
+      values.partner_pronouns = partnerCustomPronoun;
+    }
 
     const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Session expired, please log in again.');
-    return;
-  }
+    if (!token) {
+      alert('Session expired, please log in again.');
+      return;
+    }
 
     try {
       let response;
@@ -68,7 +78,7 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
             ...prevUser, 
             ...updatedUser.user,  
           }));
-        //TODO: replace with modal to keep consistency
+          // TODO: replace with modal to keep consistency
           alert('Profile updated successfully!');
         } else {
           login(updatedUser);
@@ -82,6 +92,39 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
     }
   };
 
+  const familyPlanOptions = hasPartner
+  ? [
+    {
+      value: 'Both partners are willing and/or able to be gestational carrier',
+      label: <span>We are both able and willing to be gestational carriers</span>,
+    },
+    {
+      value: 'Couple (one partner is willing and/or able to be gestational carrier)',
+      label: <span>One of us is able and willing to be a gestational carrier</span>,
+    },
+    {
+      value: 'Couple (neither partner willing nor able to be gestational carrier)',
+      label: <span>Neither of us are able or willing to be gestational carriers</span>,
+    },
+    {
+      value: 'unsure of family planning options',
+      label: <span>We are not sure</span>,
+    },
+  ]
+  : [
+    {
+      value: 'Single, planning to be gestational carrier',
+      label: <span>Single, planning to be the gestational carrier</span>,
+    },
+    {
+      value: 'Single, not willing/able to be gestational carrier',
+      label: <span>Single, planning to use a donor or surrogate</span>,
+    },
+    {
+      value: 'unsure of family planning options',
+      label: <span>I am not sure</span>,
+    },
+  ];
 
   // Pronoun options
   const pronounOptions = [
@@ -97,43 +140,15 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
     setIsCustomPronoun(value === 'other');
   };
 
+  // Handle partner status change
   const handlePartnerChange = (e) => {
     setHasPartner(e.target.value);
   };
 
-  const familyPlanOptions = hasPartner
-    ? [
-      {
-        value: 'Both partners are willing and/or able to be gestational carrier',
-        label: <span>We are both able and willing to be gestational carriers</span>,
-      },
-      {
-        value: 'Couple (one partner is willing and/or able to be gestational carrier)',
-        label: <span>One of us is able and willing to be a gestational carrier</span>,
-      },
-      {
-        value: 'Couple (neither partner willing nor able to be gestational carrier)',
-        label: <span>Neither of us are able or willing to be gestational carriers</span>,
-      },
-      {
-        value: 'unsure of family planning options',
-        label: <span>We are not sure</span>,
-      },
-    ]
-    : [
-      {
-        value: 'Single, planning to be gestational carrier',
-        label: <span>Single, planning to be the gestational carrier</span>,
-      },
-      {
-        value: 'Single, not willing/able to be gestational carrier',
-        label: <span>Single, planning to use a donor or surrogate</span>,
-      },
-      {
-        value: 'unsure of family planning options',
-        label: <span>I am not sure</span>,
-      },
-    ];
+  // Handle when the partner's pronoun changes
+  const handlePartnerPronounChange = (value) => {
+    setPartnerCustomPronoun(value === 'other');
+  };
 
   return (
     <Modal
@@ -222,6 +237,7 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
         {isCustomPronoun && (
           <Form.Item
             label="Custom Pronouns"
+            name="custom_pronouns"
             rules={[
               {
                 required: true,
@@ -293,10 +309,30 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
             >
               <Select
                 placeholder="Select your partner's pronouns"
+                onChange={handlePartnerPronounChange}
                 options={pronounOptions}
                 dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }}
               />
             </Form.Item>
+
+            {isPartnerCustomPronoun && (
+              <Form.Item
+                label="Partner's Custom Pronouns"
+                name="partner_custom_pronouns"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your partner's pronouns!",
+                  },
+                ]}
+              >
+                <Input
+                  value={partnerCustomPronoun}
+                  onChange={(e) => setPartnerCustomPronounValue(e.target.value)}
+                  placeholder="Enter your partner's pronouns"
+                />
+              </Form.Item>
+            )}
 
             <Form.Item
               label="Partner's Age"
@@ -330,22 +366,25 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
           />
         </Form.Item>
 
-       {!isEditMode && <Form.Item>
-          <Checkbox
-            checked={acceptedDisclaimer}
-            onChange={(e) => setAcceptedDisclaimer(e.target.checked)}
-          >
-            I understand that Queer Conceptions is not a substitute for professional medical, legal, or financial advice. 
-            All information provided is for guidance and educational purposes only. By signing up, 
-            I agree to the terms outlined in the  <a
-          href="/privacy-policy"
-          style={{ marginLeft: '5px', color: '#1890ff' }}
-        >
-          Privacy Policy
-        </a> and acknowledge the limitations of the provided services.
-          </Checkbox>
-        </Form.Item>
-      }
+        {!isEditMode && (
+          <Form.Item>
+            <Checkbox
+              checked={acceptedDisclaimer}
+              onChange={(e) => setAcceptedDisclaimer(e.target.checked)}
+            >
+              I understand that Queer Conceptions is not a substitute for professional medical, legal, or financial advice.
+              All information provided is for guidance and educational purposes only. By signing up, 
+              I agree to the terms outlined in the 
+              <a
+                href="/privacy-policy"
+                style={{ marginLeft: '5px', color: '#1890ff' }}
+              >
+                Privacy Policy
+              </a> 
+              and acknowledge the limitations of the provided services.
+            </Checkbox>
+          </Form.Item>
+        )}
 
         <Form.Item>
           <Space>
@@ -353,7 +392,7 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
               {isEditMode ? "Update Profile" : "Sign Up"}
             </Button>
 
-            <Button  onClick={closeSignUpModal}>
+            <Button onClick={closeSignUpModal}>
               Cancel
             </Button>
           </Space>
