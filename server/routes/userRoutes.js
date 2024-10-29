@@ -18,13 +18,24 @@ router.post('/login', async (req, res) => {
 
   try {
     //search user by email
-    const result = await db.query(`SELECT users.*, conception_plan.plan_id,  
-              conception_plan.donor_preference, conception_plan.known_fertility_issues, 
-              conception_plan.timeline, conception_plan.generated_plan, conception_plan.status, 
-              conception_plan.date_created, conception_plan.sex_at_birth, conception_plan.partner_sex_at_birth
+    const result = await db.query(
+      `SELECT users.*, 
+              conception_plan.plan_id,  
+              conception_plan.method_choice,
+              conception_plan.using_donor, 
+              conception_plan.donor_preference, 
+              conception_plan.selected_fertility_issues,
+              conception_plan.known_fertility_issues, 
+              conception_plan.timeline,
+              conception_plan.generated_plan, 
+              conception_plan.date_created, 
+              conception_plan.sex_at_birth, 
+              conception_plan.partner_sex_at_birth
        FROM users
-       LEFT JOIN conception_plan ON users.user_id = conception_plan.user_id
-       WHERE users.email = $1`, [email]);
+       LEFT JOIN conception_plan 
+       ON users.user_id = conception_plan.user_id
+       WHERE users.email = $1`,
+      [email]);
 
     if (result.rows.length === 0) {
       // User not found
@@ -62,11 +73,12 @@ router.post('/login', async (req, res) => {
         ? {
           plan_id: user.plan_id,
           method_choice: user.method_choice,
+          using_donor: user.using_donor,
           donor_preference: user.donor_preference,
+          selected_fertility_issues: user.selected_fertility_issues,
           known_fertility_issues: user.known_fertility_issues,
           timeline: user.timeline,
           generated_plan: user.generated_plan,
-          status: user.status,
           date_created: user.date_created,
           sex_at_birth: user.sex_at_birth,
           partner_sex_at_birth: user.partner_sex_at_birth,

@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Button, Card, Spin } from 'antd';
+import { Typography, Button, Card, Spin, Empty } from 'antd';
 
 const { Title, Text, Paragraph } = Typography;
 
 const GeneratedPlan = () => {
     const { user } = useUser();
 
-    if (!user.plan) {
-        return null;
+    if (!user || !user.plan || !user.plan.generated_plan) {
+        return <Empty description="No plan available. Please generate your conception plan to view it here." />;
       }
-console.log(user.plan.generated_plan)
-      
-
 
     //   //destructure the plan data
       const { title, timeline, steps } = user.plan.generated_plan
