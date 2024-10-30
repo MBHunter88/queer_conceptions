@@ -58,6 +58,7 @@ const LandingPage = () => {
               <FeatureSection
                 title="Virtual Doula"
                 description='Coming Soon'
+                link={<Link to="/chatbot">Chat Now</Link>}
               />
             </Col>
             <Divider />
