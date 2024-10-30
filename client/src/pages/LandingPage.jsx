@@ -57,7 +57,11 @@ const LandingPage = () => {
             <Col span={24}>
               <FeatureSection
                 title="Virtual Doula"
-                description='Coming Soon'
+                description='Introducing our Virtual Doula Chatbot – your personal guide to navigating the 
+                complexities of LGBTQ+ family planning. Whether you need support with understanding different 
+                conception methods, legal guidance, or simply want a friendly chat, our Virtual Doula is here 
+                to provide personalized, compassionate assistance. Start chatting today to get answers tailored 
+                to your unique journey.'
                 link={<Link to="/chatbot">Chat Now</Link>}
               />
             </Col>

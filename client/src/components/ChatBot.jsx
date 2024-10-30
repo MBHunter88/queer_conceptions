@@ -38,7 +38,7 @@ const Chatbot = () => {
   };
 
   return (
-    <Card title="QC Virtual Doula" className="chatbot-container">
+    <Card className="chatbot-container">
       <div className="chatbot-messages">
         {messages.map((msg, index) => (
           <div key={index} className={msg.role === 'user' ? 'user-message' : 'assistant-message'}>
