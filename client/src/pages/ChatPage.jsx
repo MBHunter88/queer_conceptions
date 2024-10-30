@@ -1,16 +1,37 @@
 import React, { useState } from 'react';
-import { Card, Typography, Form, Input, Layout, Row, Col } from 'antd';
+import { Card, Typography, Button, Layout, Row, Col, Modal } from 'antd';
 import Chatbot from '../components/Chatbot';
+import { useUser } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom'
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
 const ChatPage = () => {
+    const { user, setUser } = useUser();
+    const [showChat, setShowChat] = useState(false)
+    const navigate = useNavigate();
 
+     //user must be logged in to use chat feature
+     const handleShowChat = () => {
+        if (!user) {
+          // Show warning modal if the user is not logged in
+          Modal.warning({
+            title: 'Login Required',
+            content: 'Please sign up or login to use this feature.',
+            onOk: () => {
+              navigate('/');
+            },
+          });
+        } else {
+          setShowChat(true);
+        }
+      };
 
     return (
         <Layout>
             <Content style={{ height: '100%', padding: '50px 20px' }}>
+                
                 <Row gutter={[0, 40]} justify="center">
                     <Title level={2}>Virtual Doula</Title>
                     <Text>
@@ -23,8 +44,12 @@ const ChatPage = () => {
                     medical or legal advice. Let's get started – ask anything you'd like to know!
                     </Text>
                     <Col span={24}>
-                    <Chatbot />
+                   {user ? (<Chatbot />
+                   ):
+                   <Button onClick={handleShowChat}>Chat Now</Button>
+                   }
                     </Col>
+                   
                 </Row>
 
             </Content>
