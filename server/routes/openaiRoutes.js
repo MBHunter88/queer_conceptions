@@ -140,21 +140,39 @@ router.post('/generate/:id', async (req, res) => {
   }
 });
 
-//GET /plan/:id - get plan by user id
-router.get('/userPlan/:id', async (req, res) => {
-  const { id } = req.params;
+
+//chatbot endpoint
+router.post('/chatbot', async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM conception_plan WHERE user_id = $1', [id]);
-    if (result.rows.length > 0) {
-      res.status(200).json({ plan: result.rows });
-    } else {
-      res.status(404).json({ message: 'Plan not found' });
+    const { userMessages } = req.body;
+
+    // user messages must return as an array to track conversation history
+    if (!userMessages || !Array.isArray(userMessages) || userMessages.length === 0) {
+      return res.status(400).json({ error: 'Please provide a valid conversation history.' });
     }
+
+    const systemMessage = {
+      role: 'system',
+      content: 'You are a helpful assistant specialized in supporting LGBTQ+ family planning and conception-related queries. Answer in a friendly, clear, and informative manner.',
+    };
+
+    //messages array with system message followed by user inputs and assistant responses
+    const messages = [systemMessage, ...userMessages];
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4',
+      messages: messages,
+    });
+
+    const assistantMessage = response.choices[0].message.content;
+
+    res.status(200).json({ message: assistantMessage });
   } catch (error) {
+    console.error('Error generating chatbot response:', error);
     res.status(500).json({
-      error: 'Server error fetch user plan',
+      error: 'Failed to get response from chatbot',
       message: error.message,
-      operation: 'GET /plan/:id'
+      operation: 'POST /chatbot/',
     });
   }
 });

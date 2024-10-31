@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from "dotenv";
 import userRoutes from './routes/userRoutes.js';
-import planRoutes from './routes/planRoutes.js';
+import openaiRoutes from './routes/openaiRoutes.js';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 //import oauthRoutes from './routes/oauth.js';
@@ -20,7 +20,7 @@ app.use(express.json());
 
 // Use routes
 app.use('/users', userRoutes);
-app.use('/plans', planRoutes);
+app.use('/plans', openaiRoutes);
 
 // TODO: Use the OAuth routes
 //app.use('/oauth', oauthRoutes);
