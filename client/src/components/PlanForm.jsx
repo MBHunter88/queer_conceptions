@@ -1,36 +1,43 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../context/UserContext';
-import { Button, Form, Input, Radio, Popover, Checkbox, Select, Modal } from 'antd';
+import { Button, Form, Input, Radio, Popover, Checkbox, Select, Modal, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom'
 import GeneratedPlan from './GeneratedPlan';
+import { Link } from 'react-router-dom';
 
 const PlanForm = () => {
   const [usingDonor, setUsingDonor] = useState(false);
   const [knownFertilityIssues, setKnownFertilityIssues] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState(null);
+  const [showForm, setShowForm] = useState(false)
   const { user, setUser } = useUser();
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
-  const hasWarnedRef = useRef(false);
+  //const hasWarnedRef = useRef(false);
 
   //user must be logged in to generate plan
-  useEffect(() => {
-    if (!user && !hasWarnedRef.current) {
-      hasWarnedRef.current = true; 
-      // Show warning modal
-      Modal.warning({
-        title: 'Login Required',
-        content: 'Please sign up or login to generate your conception plan.',
-        onOk: () => {
-          navigate('/');
-        },
-      });
-    }
-  }, [user, navigate]);
+ 
+    const handleShowForm = () => {
+      if (!user) {
+        // Show warning modal if the user is not logged in
+        Modal.warning({
+          title: 'Login Required',
+          content: 'Please sign up or login to generate your conception plan.',
+          onOk: () => {
+            navigate('/');
+          },
+        });
+      } else {
+        setShowForm(true);
+      }
+    };
+
  
  
 
   //<---------------------External API request-------------------------->//
   const handleGeneratePlan = async (values) => {
+    setLoading(true)
     console.log('Form values:', values);
     //use info from user profile 
     const formData = {
@@ -61,10 +68,13 @@ const PlanForm = () => {
           plan: generatedPlan.plan,
         }));
       } else {
-        console.error('Plan generation failed', response.statusText)
+        const errorResponse = await response.json(); 
+        console.error('Plan generation failed', response.statusText, errorResponse);
       }
     } catch (error) {
       console.error('Error generating plan:', error);
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -123,7 +133,6 @@ const PlanForm = () => {
     <p>...someone who is personally known to the intended parents, such as a friend, family member, or partner.</p>
   )
 
-  //<-----------------------additional event handler functions----------------------->//
  // timeline options
  const timelineOptions = [
   {
@@ -147,20 +156,72 @@ const PlanForm = () => {
     lable: <span>I don't know</span>
   }
  ]
+ //<-----------------------additional event handler functions----------------------->//
+
+// Check if the plan is loading
+if (loading) {
+  return <Spin tip="Generating your plan, please wait..." />;
+}
 
 const handleGetNewPlan = () => {
   setUser((prevUser) => ({
     ...prevUser,
     plan: null,
   }));
+  setGeneratedPlan(null);
+  setShowForm(false);
   navigate('/planner')
   console.log("User plan details:", user.plan)
 }
 
+const handleDisclosure = (values) => {
+  Modal.confirm({
+    title: 'Third-Party Data Disclosure',
+    content: (
+      <>
+         Your information is being sent to a third party (OpenAI) for generating your conception plan. 
+         Are you sure you want to continue?
+        <br />
+        For more details, please see our{' '}
+        <a
+          href="/privacy-policy"
+          style={{ marginLeft: '5px', color: '#1890ff' }}
+        >
+          Privacy Policy
+        </a>.
+      </>
+    ),
+    okText: 'Yes',
+    okType: 'danger',
+    cancelText: 'No',
+    onOk: () => {
+      handleGeneratePlan(values);
+    },
+    onCancel: () => {
+      console.log('User declined to proceed');
+    },
+  });
+}
+
   return (
     <>
-     {generatedPlan === null ? (
-        <Form onFinish={handleGeneratePlan} >
+    
+      {user?.plan && !showForm && (
+        <>
+          <Button type="primary" onClick={handleGetNewPlan}>
+            Get New Plan
+          </Button>
+          <GeneratedPlan plan={user.plan} /> <br />
+        </>
+      )}
+      
+       {!showForm && !user?.plan && (
+        <Button type="primary" onClick={handleShowForm}>
+          Start Conception Plan
+        </Button>
+      )}
+     {showForm && !generatedPlan && user && (
+        <Form onFinish={handleDisclosure} >
 
           <Form.Item label="Timeline" name="timeline">
             <Select placeholder="When do you plan on starting your conception journey?"
@@ -274,12 +335,15 @@ const handleGetNewPlan = () => {
           <Button type='primary' htmlType='submit'>Generate Plan</Button>
 
         </Form>
-      ) : (
-        <><GeneratedPlan plan={user.plan} /> <br/>
-        <Button type="primary" onClick={handleGetNewPlan}>
-            Get New Plan
-          </Button></>
       )}
+      {generatedPlan && (
+      <div>
+        <GeneratedPlan plan={generatedPlan} />
+        <Button type="primary" onClick={handleGetNewPlan}>
+          Get New Plan
+        </Button>
+      </div>
+    )}
     </>
   );
 };

@@ -4,6 +4,7 @@ import UserProfile from '../pages/UserProfile'
 import ResourceLibrary from '../pages/ResourceLibrary';
 import ConceptionPlanner from '../pages/ConceptionPlanner';
 import NavBar from '../components/NavBar';
+import PrivacyPolicy from '../pages/PrivacyPolicy'
 
 const AppRouter = () => {
   return (
@@ -14,6 +15,7 @@ const AppRouter = () => {
         <Route path="/planner" element={<ConceptionPlanner />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/resources" element={<ResourceLibrary />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
     </Router>
   );

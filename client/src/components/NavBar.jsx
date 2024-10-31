@@ -21,7 +21,7 @@ const { Header } = Layout;
 const Navbar = () => {
   const { user, logout } = useUser();
   const navigate = useNavigate();
-    const { openSignUpModal, openLoginModal, isSignUpModalOpen, isLoginModalOpen} = useModal();
+  const { openSignUpModal, openLoginModal, isSignUpModalOpen, isLoginModalOpen, closeSignUpModal, closeLoginModal } = useModal();
 
 
   const handleLogout = () => {
@@ -78,8 +78,12 @@ const Navbar = () => {
       </Menu>
     </Header>
 
-    {isSignUpModalOpen && <SignUpModal />}
-    {isLoginModalOpen && <LoginModal />}
+    {isSignUpModalOpen && <SignUpModal
+      isSignUpModalOpen={isSignUpModalOpen}
+      closeSignUpModal={closeSignUpModal} />}
+    {isLoginModalOpen && <LoginModal 
+     isLoginModalOpen={isLoginModalOpen}
+     closeLoginModal={closeLoginModal}/>}
   </>
   );
 };
