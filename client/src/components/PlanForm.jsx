@@ -221,7 +221,7 @@ const handleDisclosure = (values) => {
         </Button>
       )}
      {showForm && !generatedPlan && user && (
-        <Form onFinish={handleDisclosure} >
+        <Form onFinish={handleDisclosure} data-testid="plan-form">
 
           <Form.Item label="Timeline" name="timeline">
             <Select placeholder="When do you plan on starting your conception journey?"
