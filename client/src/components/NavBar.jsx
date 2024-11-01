@@ -13,7 +13,8 @@ import {
   LoginOutlined,
   LogoutOutlined,
   UserAddOutlined,
-  ProfileOutlined
+  ProfileOutlined, 
+  OpenAIOutlined
 } from '@ant-design/icons';
 
 const { Header } = Layout;
@@ -44,6 +45,9 @@ const Navbar = () => {
         <Menu.Item key='conception-planner' icon={<ProfileOutlined />}>
           <Link to="/planner">Conception Planner</Link>
         </Menu.Item>
+        <Menu.Item key="profile" icon={<OpenAIOutlined />}>
+              <Link to="/chatbot">Virtual Doula</Link>
+            </Menu.Item>
         {user ? (
           <>
             <Menu.Item key="profile" icon={<UserOutlined />}>
