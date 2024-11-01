@@ -53,7 +53,7 @@ const Navbar = () => {
         theme="light"
       >
     
-        <Menu.Item key="logo" style={{ marginRight: 'auto', padding: '0 2rem' }}>
+        <Menu.Item key="logo" role="presentation" style={{ marginRight: 'auto', padding: '0 2rem' }}>
           <Link to="/">
             <img
               src="qclogo.png"
@@ -66,29 +66,29 @@ const Navbar = () => {
             />
           </Link>
         </Menu.Item>
-        <Menu.Item key="home" icon={<HomeOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/">Home</Link>
+        <Menu.Item key="home" aria-current={window.location.pathname === '/' ? 'page' : undefined} icon={<HomeOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
+          <Link to="/" aria-label="Home Page">Home</Link>
         </Menu.Item>
         <Menu.Item key="resources" icon={<BookOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/resources">Resource Library</Link>
+          <Link to="/resources" aria-label="Resource Library Page">Resource Library</Link>
         </Menu.Item>
-        <Menu.Item key="conception-planner" icon={<ProfileOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/planner">Conception Planner</Link>
+        <Menu.Item key="conception-planner"  icon={<ProfileOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
+          <Link to="/planner" aria-label="Cocneption Planner Page">Conception Planner</Link>
         </Menu.Item>
         <Menu.Item key="chatbot" icon={<OpenAIOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/chatbot">Virtual Doula</Link>
+          <Link to="/chatbot" aria-label="Virtual Doula Page">Virtual Doula</Link>
         </Menu.Item>
         {user ? (
           <>
             <Menu.Item key="profile" icon={<UserOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
               <Link to="/profile">
                 <Space>
-                  <Avatar>{user.name[0]}</Avatar>
+                  <Avatar aria-hidden="true">{user.name[0]}</Avatar>
                   Welcome, {user.name}!
                 </Space>
               </Link>
             </Menu.Item>
-            <Menu.Item key="logout" icon={<LogoutOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
+            <Menu.Item key="logout" aria-label="Logout" icon={<LogoutOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
               <Button type="link" onClick={handleLogout}>
                 Logout
               </Button>
@@ -97,12 +97,12 @@ const Navbar = () => {
         ) : (
           <>
             <Menu.Item key="signup" icon={<UserAddOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-              <Button type="link" onClick={openSignUpModal}>
+              <Button type="link" aria-haspopup="dialog" onClick={openSignUpModal}>
                 Sign-Up
               </Button>
             </Menu.Item>
             <Menu.Item key="login" icon={<LoginOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-              <Button type="link" onClick={openLoginModal}>
+              <Button type="link" aria-haspopup="dialog" onClick={openLoginModal}>
                 Login
               </Button>
             </Menu.Item>
