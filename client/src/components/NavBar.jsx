@@ -4,7 +4,7 @@ import LoginModal from './LoginModal';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import SignUpModal from './SignUpModal';
-import { useModal } from '../context/ModalContext'
+import { useModal } from '../context/ModalContext';
 import { Layout, Menu, Button, Avatar, Space } from 'antd';
 import {
   UserOutlined,
@@ -13,82 +13,111 @@ import {
   LoginOutlined,
   LogoutOutlined,
   UserAddOutlined,
-  ProfileOutlined, 
-  OpenAIOutlined
+  ProfileOutlined,
+  OpenAIOutlined,
 } from '@ant-design/icons';
-
-const { Header } = Layout;
 
 const Navbar = () => {
   const { user, logout } = useUser();
   const navigate = useNavigate();
-  const { openSignUpModal, openLoginModal, isSignUpModalOpen, isLoginModalOpen, closeSignUpModal, closeLoginModal } = useModal();
-
+  const {
+    openSignUpModal,
+    openLoginModal,
+    isSignUpModalOpen,
+    isLoginModalOpen,
+    closeSignUpModal,
+    closeLoginModal,
+  } = useModal();
 
   const handleLogout = () => {
-    logout()
-    navigate('/')
-  }
+    logout();
+    navigate('/');
+  };
+
   return (
     <>
-    <Header className="navbar" style={{backgroundColor: "white"}}>
-      {/* Logo image can go here */}
-      <Menu  mode="horizontal" defaultSelectedKeys={['home']} style={{ lineHeight: '64px'}} theme="light">
-        <Menu.Item key="home" icon={<HomeOutlined />}>
-        <Link to="/">
-          Queer Conceptions
-        </Link>
+      
+      <Menu
+        mode="horizontal"
+        defaultSelectedKeys={['home']}
+        style={{
+          lineHeight: '3.5vw',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000,
+        }}
+        theme="light"
+      >
+    
+        <Menu.Item key="logo" style={{ marginRight: 'auto', padding: '0 2rem' }}>
+          <Link to="/">
+            <img
+              src="qclogo.png"
+              alt="Queer Conceptions Logo"
+              style={{
+                height: '3.5vw',
+                width: 'auto',
+                transition: 'transform 0.3s ease',
+              }}
+            />
+          </Link>
         </Menu.Item>
-        <Menu.Item key="resources" icon={<BookOutlined />}>
+        <Menu.Item key="home" icon={<HomeOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
+          <Link to="/">Home</Link>
+        </Menu.Item>
+        <Menu.Item key="resources" icon={<BookOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
           <Link to="/resources">Resource Library</Link>
         </Menu.Item>
-        <Menu.Item key='conception-planner' icon={<ProfileOutlined />}>
+        <Menu.Item key="conception-planner" icon={<ProfileOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
           <Link to="/planner">Conception Planner</Link>
         </Menu.Item>
-        <Menu.Item key="profile" icon={<OpenAIOutlined />}>
-              <Link to="/chatbot">Virtual Doula</Link>
-            </Menu.Item>
+        <Menu.Item key="chatbot" icon={<OpenAIOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
+          <Link to="/chatbot">Virtual Doula</Link>
+        </Menu.Item>
         {user ? (
           <>
-            <Menu.Item key="profile" icon={<UserOutlined />}>
-              <Link to="/profile">Profile</Link>
+            <Menu.Item key="profile" icon={<UserOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
+              <Link to="/profile">
+                <Space>
+                  <Avatar>{user.name[0]}</Avatar>
+                  Welcome, {user.name}!
+                </Space>
+              </Link>
             </Menu.Item>
-            <Menu.Item key="logout" icon={<LogoutOutlined />}>
-              <Button type="link" onClick={handleLogout} >
+            <Menu.Item key="logout" icon={<LogoutOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
+              <Button type="link" onClick={handleLogout}>
                 Logout
               </Button>
-            </Menu.Item>
-            <Menu.Item key="welcome" disabled style={{ cursor: 'default' }}>
-              <Space>
-                <Avatar>{user.name[0]}</Avatar>
-                Welcome, {user.name}!
-              </Space>
             </Menu.Item>
           </>
         ) : (
           <>
-            <Menu.Item key="signup" icon={<UserAddOutlined />}>
+            <Menu.Item key="signup" icon={<UserAddOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
               <Button type="link" onClick={openSignUpModal}>
                 Sign-Up
               </Button>
             </Menu.Item>
-            <Menu.Item key="login" icon={<LoginOutlined />}>
-              <Button type="link" onClick={openLoginModal} >
+            <Menu.Item key="login" icon={<LoginOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
+              <Button type="link" onClick={openLoginModal}>
                 Login
               </Button>
             </Menu.Item>
           </>
         )}
       </Menu>
-    </Header>
 
-    {isSignUpModalOpen && <SignUpModal
-      isSignUpModalOpen={isSignUpModalOpen}
-      closeSignUpModal={closeSignUpModal} />}
-    {isLoginModalOpen && <LoginModal 
-     isLoginModalOpen={isLoginModalOpen}
-     closeLoginModal={closeLoginModal}/>}
-  </>
+      {/* Modals */}
+      {isSignUpModalOpen && (
+        <SignUpModal isSignUpModalOpen={isSignUpModalOpen} closeSignUpModal={closeSignUpModal} />
+      )}
+      {isLoginModalOpen && (
+        <LoginModal isLoginModalOpen={isLoginModalOpen} closeLoginModal={closeLoginModal} />
+      )}
+    </>
   );
 };
 
