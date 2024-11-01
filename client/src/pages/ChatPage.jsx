@@ -30,11 +30,11 @@ const ChatPage = () => {
 
     return (
         <Layout>
-            <Content style={{ height: '100%', padding: '50px 20px' }}>
+            <Content style={{ padding: '30px', maxWidth: '100%', margin: '0 auto', backgroundColor: '#EEE0CB',borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
                 
-                <Row gutter={[0, 40]} justify="center">
-                    <Title level={2}>Virtual Doula</Title>
-                    <Text>
+            <Row gutter={[0, 40]} justify="center">
+                    <Title level={2} style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '20px' }}>Virtual Doula</Title>
+                    <Text style={{ fontSize: '1.2rem', lineHeight: '1.75', textAlign: 'center', maxWidth: '100%', marginBottom: '20px' }}>
                     Welcome to the Virtual Doula Chatbot! This chatbot is designed to 
                     support you by answering your questions related to family planning, 
                     conception methods, legal considerations, and more. Simply type your 
@@ -43,13 +43,15 @@ const ChatPage = () => {
                     provided is for educational purposes and does not replace professional
                     medical or legal advice. Let's get started – ask anything you'd like to know!
                     </Text>
-                    <Col span={24}>
-                   {user ? (<Chatbot />
-                   ):
-                   <Button onClick={handleShowChat}>Chat Now</Button>
-                   }
+                    <Col span={24} style={{ textAlign: 'center' }}>
+                   {user ? (
+                     <Chatbot />
+                   ) : (
+                     <Button type="primary" onClick={handleShowChat} style={{ padding: '10px 20px', fontSize: '1.2rem', backgroundColor: '#007000', borderColor: '#007000' }}>
+                       Chat Now
+                     </Button>
+                   )}
                     </Col>
-                   
                 </Row>
 
             </Content>

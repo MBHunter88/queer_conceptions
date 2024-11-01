@@ -209,7 +209,8 @@ const handleDisclosure = (values) => {
     <>
     {user?.plan && !showForm && (
       <>
-        <Button type="primary" onClick={handleGetNewPlan} style={{ marginBottom: '20px' }}>
+        <Button type="primary" onClick={handleGetNewPlan} style={{ marginBottom: '20px',  backgroundColor: '#007000',
+            borderColor: '#007000', }}>
           Get New Plan
         </Button>
         <GeneratedPlan plan={user.plan} /> <br />

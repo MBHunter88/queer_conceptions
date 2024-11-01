@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem('token', userData.token)
     setUser({
       ...userData.user,
-      plan: userData.plan,
+      // plan: userData.plan,
     });
   };
 
