@@ -1,5 +1,5 @@
 services:
-  - name: server
+  - name: queer_conceptions
     plan: free
     type: web
     env: node

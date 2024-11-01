@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Typography, Button, Layout, Row, Col, Modal } from 'antd';
+import { Typography, Button, Layout, Row, Col, Modal } from 'antd';
 import Chatbot from '../components/Chatbot';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom'

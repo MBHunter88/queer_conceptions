@@ -5,7 +5,7 @@ import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import SignUpModal from './SignUpModal';
 import { useModal } from '../context/ModalContext';
-import { Layout, Menu, Button, Avatar, Space } from 'antd';
+import { Menu, Button, Avatar, Space } from 'antd';
 import {
   UserOutlined,
   HomeOutlined,
