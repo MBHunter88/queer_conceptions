@@ -1,39 +1,92 @@
 import React from 'react';
 import FeatureSection from '../components/FeatureSection';
 import { Link } from 'react-router-dom';
-import { Layout, Typography, Row, Col, Divider } from 'antd';
+import { Layout, Typography, Row, Col, Divider, Space } from 'antd';
+
 
 const { Content, Footer } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
-//TODO: Styling
 
 const LandingPage = () => {
   return (
-    <Layout>
-      <Content style={{ height: '100%', padding: '50px 20px' }}>
+    <Layout style={{backgroundColor: '#EEE0CB',  marginTop: '-6.5vw', marginLeft: '-1vw', marginRight: '-1vw', padding: '50px 20px'}}>
+      <Content
+        style={{
+          height: '100%',
+          padding: '50px 20px',
+        }}>
         <div className="landing-page">
-          <Title level={1} style={{ textAlign: 'center', marginBottom: '40px' }}>
+       
+        <div style={{
+              height: '35vw',
+              padding: '50px 20px',
+              background: 'url(pregnancy.jpg) no-repeat center/cover',
+              color: '#fff',
+              position: 'relative',
+              textShadow: '2px 2px 5px rgba(0, 0, 0, 0.7)',
+              display: 'flex',
+              justifyContent: 'center',
+              marginLeft: '-2vw',
+              marginRight: '-2vw'
+            }}>
+         <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(0, 0, 0, 0.5)',
+                }}> 
+          </div>
+          
+          <div style={{ position: 'relative', zIndex: 1, maxWidth: "80%", marginTop: '1vw' }}>
+          <Title level={1}
+            style={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              color: '#fff',
+            }}>
             Welcome to Queer Conceptions
           </Title>
-          <Title level={4}>
-            Queer Conceptions was created to address the unique challenges faced by LGBTQ+ individuals and families
-            as they navigate the journey of family building. We recognize that traditional resources often overlook
-            the needs of LGBTQ+ communities, leaving many without the guidance and support they deserve. Our mission
-            is to bridge that gap by offering a compassionate, inclusive space that provides clear, comprehensive,
-            and accessible information about conception options, legal considerations, medical processes, and emotional support.
-
-            We understand that the journey to parenthood is deeply personal and often complex. Whether you're pursuing
-            IVF, surrogacy, donor conception, or exploring other paths, Queer Conceptions is here to provide the personalized
-            resources and step-by-step guidance you need. By bringing together curated information and tailored support,
-            we aim to empower LGBTQ+ individuals and families to make informed decisions and navigate
-            the family-building process with confidence.
-          </Title>
-          <Divider />
+          <Space direction='vertical'>
+            <Text style={{
+              fontSize: '1.35rem',
+              lineHeight: '1.75',
+              textAlign: 'center',
+              margin: '0 auto',
+              color: '#fff',
+            }}>
+              Queer Conceptions was created to address the unique challenges faced by LGBTQ+ individuals and families
+              as they navigate the journey of family building. We recognize that traditional resources often overlook
+              the needs of LGBTQ+ communities, leaving many without the guidance and support they deserve. Our mission
+              is to bridge that gap by offering a compassionate, inclusive space that provides clear, comprehensive,
+              and accessible information about conception options, legal considerations, medical processes, and emotional support.
+            </Text>
+            <Text style={{
+                fontSize: '1.35rem',
+                lineHeight: '1.75',
+                textAlign: 'center',
+                margin: '0 auto',
+                color: '#fff',
+              }}>
+              We understand that the journey to parenthood is deeply personal and often complex. Whether you're pursuing
+              IVF, surrogacy, donor conception, or exploring other paths, Queer Conceptions is here to provide the personalized
+              resources and step-by-step guidance you need. By bringing together curated information and tailored support,
+              we aim to empower LGBTQ+ individuals and families to make informed decisions and navigate
+              the family-building process with confidence.
+            </Text>
+          </Space>
+          </div>
+          </div>
+          <Divider  />
           {/* feature sections in vertical layout */}
           <Row gutter={[0, 40]} justify="center">
-            <Col span={24}>
-              <FeatureSection
+            <Col span={24}
+            style={{ 
+              maxWidth: '80%'
+            }}>
+              <FeatureSection 
                 title="Conception Planner"
                 description="Start your journey with a personalized conception plan crafted specifically for you. 
                 By answering a few simple questions, we’ll create a detailed roadmap to help you navigate the unique 
@@ -44,7 +97,10 @@ const LandingPage = () => {
               />
               <Divider />
             </Col>
-            <Col span={24}>
+            <Col span={24}
+             style={{ 
+              maxWidth: '80%'
+            }}>
               <FeatureSection
                 title="Resource Library"
                 description="Access a wealth of inclusive resources curated specifically for LGBTQ+ families.
@@ -54,7 +110,10 @@ const LandingPage = () => {
               />
             </Col>
             <Divider />
-            <Col span={24}>
+            <Col span={24}
+            style={{ 
+              maxWidth: '80%'
+            }}>
               <FeatureSection
                 title="Virtual Doula"
                 description='Introducing our Virtual Doula Chatbot – your personal guide to navigating the 
@@ -69,7 +128,7 @@ const LandingPage = () => {
           </Row>
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
+      <Footer style={{ textAlign: 'center', padding: '20px 50px', }}>
         BHBH Design ©{new Date().getFullYear()} Created by MJBH
       </Footer>
     </Layout>
