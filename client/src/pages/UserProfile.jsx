@@ -6,6 +6,7 @@ import SignUpModal from '../components/SignUpModal';
 
 const UserProfile = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [showPlan, setShowPlan] = useState(false)
     const { user, setUser } = useUser();
 
     if (!user) {
@@ -58,40 +59,51 @@ const UserProfile = () => {
     };
 
     return (
-        <div className={'user-profile'}>
-            <Card title="Profile">
-                <h2>Welcome {user.name} ({user.pronouns})</h2>
-                <Card type="inner" title="User Details">
-                    <p>Email: {user.email}</p>
-                    <p>Location: {user.location}</p>
-                    <p>Family Building Plan: {user.family_structure}</p>
-                    <p>Age: {user.age}</p>
-                </Card>
-                {user.has_partner && (
-                    <Card type="inner" title="Partner Details">
-                        <p>Partner Name: {user.partner_name} ({user.partner_pronouns})</p>
-                        <p>Partner Identifies As: {user.partner_identifies_as}</p>
-                        <p>Partner Age: {user.partner_age}</p>
-                    </Card>
+        <div className={'user-profile'} style={{ padding: '30px', maxWidth: '100%', margin: '0 auto', backgroundColor: '#EEE0CB',borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+  <Card title={<span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Profile</span>} style={{ marginBottom: '20px', maxWidth: '80%',  margin: '0 auto' }}>
+    <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '20px' }}>Welcome {user.name} ({user.pronouns})</h2>
+    <Card type="inner" title={<span style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>User Details</span>} style={{ marginBottom: '20px' }}>
+      <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Email: {user.email}</p>
+      <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Location: {user.location}</p>
+      <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Family Building Plan: {user.family_structure}</p>
+      <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Age: {user.age}</p>
+    </Card>
+    {user.has_partner && (
+      <Card type="inner" title={<span style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Partner Details</span>} style={{ marginBottom: '20px' }}>
+        <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Partner Name: {user.partner_name} ({user.partner_pronouns})</p>
+        <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Partner Identifies As: {user.partner_identifies_as}</p>
+        <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Partner Age: {user.partner_age}</p>
+      </Card>
+    )}
+    {user.plan && (
+                    <div style={{ marginTop: '20px' }}>
+                        <p></p>
+                        <Button type="primary" onClick={() => setShowPlan(!showPlan)} style={{ marginBottom: '20px', fontSize: '1rem',  backgroundColor: '#007000',
+            borderColor: '#007000', }}>
+                            {showPlan ? 'Collapse Plan' : 'Show Plan'}
+                        </Button>
+                        {showPlan && <GeneratedPlan />}
+                    </div>
                 )}
-                {user.plan && (
-                    <GeneratedPlan />
-                )}
-            </Card>
-            <Button type="primary" onClick={handleEditProfile} style={{ marginRight: '10px' }}>
-                Edit Profile
-            </Button>
-            <Button htmlType="submit" onClick={handleDeleteUser} danger>
-                Delete Account
-            </Button>
-            {/* Edit Profile Modal (Reusing SignUpModal) */}
-            <SignUpModal
-                isEditMode={true}
-                initialValues={user}
-                isSignUpModalOpen={isEditModalOpen}
-                closeSignUpModal={handleCloseModal}
-            />
-        </div>
+  </Card>
+  <div style={{ textAlign: 'center', padding: '10px 20px'  }}>
+    <Button type="primary" onClick={handleEditProfile} style={{ marginRight: '10px', padding: '10px 20px', fontSize: '1rem',  backgroundColor: '#007000',
+            borderColor: '#007000', }}>
+      Edit Profile
+    </Button>
+    <Button htmlType="submit" onClick={handleDeleteUser} danger style={{ padding: '10px 20px', fontSize: '1rem' }}>
+      Delete Account
+    </Button>
+  </div>
+  {/* Edit Profile Modal (Reusing SignUpModal) */}
+  <SignUpModal
+    isEditMode={true}
+    initialValues={user}
+    isSignUpModalOpen={isEditModalOpen}
+    closeSignUpModal={handleCloseModal}
+  />
+</div>
+
     );
 };
 

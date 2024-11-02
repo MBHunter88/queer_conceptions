@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
 import { Button, Form, Input, Radio, Popover, Checkbox, Select, Modal, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom'
 import GeneratedPlan from './GeneratedPlan';
-import { Link } from 'react-router-dom';
+
 
 const PlanForm = () => {
   const [usingDonor, setUsingDonor] = useState(false);
@@ -160,7 +160,9 @@ const PlanForm = () => {
 
 // Check if the plan is loading
 if (loading) {
-  return <Spin tip="Generating your plan, please wait..." />;
+  return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+  <Spin size="large" tip="Generating your plan, please wait..." />
+</div>
 }
 
 const handleGetNewPlan = () => {
@@ -205,146 +207,214 @@ const handleDisclosure = (values) => {
 
   return (
     <>
-    
-      {user?.plan && !showForm && (
-        <>
-          <Button type="primary" onClick={handleGetNewPlan}>
-            Get New Plan
-          </Button>
-          <GeneratedPlan plan={user.plan} /> <br />
-        </>
-      )}
-      
-       {!showForm && !user?.plan && (
-        <Button type="primary" onClick={handleShowForm}>
-          Start Conception Plan
+    {user?.plan && !showForm && (
+      <>
+        <Button type="primary" onClick={handleGetNewPlan} style={{ marginBottom: '20px',  backgroundColor: '#007000',
+            borderColor: '#007000', }}>
+          Get New Plan
         </Button>
-      )}
-     {showForm && !generatedPlan && user && (
-        <Form onFinish={handleDisclosure} data-testid="plan-form">
-
-          <Form.Item label="Timeline" name="timeline">
-            <Select placeholder="When do you plan on starting your conception journey?"
-              options={timelineOptions}
-              dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }} />
-          </Form.Item>
-
-          <Form.Item label="Sex assigned at birth" name='sex_at_birth' rules={[{ required: true }]}>
-            <Radio.Group>
-              <Radio value='Male'>Male</Radio>
-              <Radio value='Female'>Female</Radio>
+        <GeneratedPlan plan={user.plan} /> <br />
+      </>
+    )}
+  
+    {!showForm && !user?.plan && (
+      <Button type="primary" onClick={handleShowForm}  style={{
+        backgroundColor: '#007000',
+        borderColor: '#007000',
+        color: '#fff',
+        fontWeight: '500',
+        marginTop: '20px',
+        textAlign: 'center'
+      }}>
+        Start Conception Plan
+      </Button>
+    )}
+  
+    {showForm && !generatedPlan && user && (
+      <Form
+        onFinish={handleDisclosure}
+        data-testid="plan-form"
+        layout="vertical"
+        style={{ width: '100%', padding: '30px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: '#ffff' }}
+      >
+        <Form.Item
+          label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Timeline</span>}
+          name="timeline"
+          style={{ marginBottom: '20px' }}
+        >
+          <Select
+            placeholder="When do you plan on starting your conception journey?"
+            options={timelineOptions}
+            dropdownStyle={{ maxWidth: '100%', whiteSpace: 'normal' }}
+            style={{ fontSize: '1rem' }}
+          />
+        </Form.Item>
+  
+        <Form.Item
+         label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Sex assigned at birth</span>}
+          name="sex_at_birth"
+          rules={[{ required: true }]}
+          style={{ marginBottom: '20px' }}
+        >
+          <Radio.Group style={{ fontSize: '1rem' }}>
+            <Radio value="Male">Male</Radio>
+            <Radio value="Female">Female</Radio>
+          </Radio.Group>
+        </Form.Item>
+  
+        {user?.has_partner && (
+          <Form.Item
+          label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Partner sex assigned at birth</span>}
+            name="partner_sex_at_birth"
+            rules={[{ required: true }]}
+            style={{ marginBottom: '20px' }}
+          >
+            <Radio.Group style={{ fontSize: '1rem' }}>
+              <Radio value="Male">Male</Radio>
+              <Radio value="Female">Female</Radio>
             </Radio.Group>
           </Form.Item>
-
-          {user?.has_partner && (
-            <Form.Item label="Partner sex assigned at birth" name='partner_sex_at_birth' rules={[{ required: true }]}>
-              <Radio.Group>
-                <Radio value='Male'>Male</Radio>
-                <Radio value='Female'>Female</Radio>
-              </Radio.Group>
-            </Form.Item>
-          )}
-
-          <Form.Item label="Conception Method" name="method_choice" valuePropName="checked" rules={[{ required: true, message: 'Please select at least one conception method.' }]}>
+        )}
+  
+        <Form.Item
+          label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Conception Method</span>}
+          name="method_choice"
+          valuePropName="checked"
+          rules={[{ required: true, message: 'Please select at least one conception method.' }]}
+          style={{ marginBottom: '20px' }}
+        >
+          <Checkbox.Group>
+            {[
+              { value: 'IVF', label: 'IVF', popover: ivfInfo },
+              { value: 'Reciprocal IVF', label: 'Reciprocal IVF', popover: rIvfInfo },
+              { value: 'IUI', label: 'IUI', popover: iuiInfo },
+              { value: 'ICI', label: 'ICI', popover: iciInfo },
+              { value: 'Gestational Surrogacy', label: 'Gestational Surrogacy', popover: gcInfo },
+              { value: 'Traditional Surrogacy', label: 'Traditional Surrogacy', popover: tsInfo },
+              { value: 'Timed-Intercourse', label: 'Timed-Intercourse', popover: tiInfo },
+              { value: 'Fertility preservation', label: 'Fertility Preservation', popover: fpInfo },
+              { value: "I don't know can you help me decide?", label: "I don't know can you help me decide?" },
+            ].map((method) => (
+              method.popover ? (
+                <Checkbox value={method.value} key={method.value} style={{ marginBottom: '10px', fontSize: '1rem' }}>
+                  <Popover content={method.popover} trigger="hover" overlayStyle={{ maxWidth: '300px' }}>
+                    <span
+                      style={{
+                        color: '#007000',
+                        textDecoration: '',
+                        cursor: 'pointer',
+                        fontSize: '1rem',
+                        transition: 'color 0.3s',
+                      }}
+                      onMouseEnter={(e) => e.target.style.color = '#004d00'}
+                      onMouseLeave={(e) => e.target.style.color = '#007000'}
+                    >
+                      {method.label}
+                    </span>
+                  </Popover>
+                </Checkbox>
+              ) : (
+                <Checkbox value={method.value} key={method.value} style={{ marginBottom: '10px', fontSize: '1rem' }}>
+                  {method.label}
+                </Checkbox>
+              )
+            ))}
+          </Checkbox.Group>
+        </Form.Item>
+  
+        <Form.Item
+         label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Known Fertility Issues</span>}
+          name="selected_fertility_issues"
+          rules={[{ required: true }]}
+          style={{ marginBottom: '20px', fontSize: '1.2rem' }}
+        >
+          <Radio.Group onChange={(e) => setKnownFertilityIssues(e.target.value)} style={{ fontSize: '1rem' }}>
+            <Radio value={true}>Yes</Radio>
+            <Radio value={false}>No</Radio>
+            <Radio value="unsure">Unsure</Radio>
+          </Radio.Group>
+        </Form.Item>
+  
+        {knownFertilityIssues === true && (
+          <Form.Item
+          label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Please specify</span>}
+            name="known_fertility_issues"
+            style={{ marginBottom: '20px' }}
+          >
+            <Input placeholder="List any known fertility concerns here" style={{ fontSize: '1rem' }} />
+          </Form.Item>
+        )}
+  
+        <Form.Item
+         label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Will you be using a donor?</span>}
+          name="using_donor"
+          rules={[{ required: true }]}
+          style={{ marginBottom: '20px' }}
+        >
+          <Radio.Group onChange={(e) => setUsingDonor(e.target.value)} style={{ fontSize: '1rem' }}>
+            <Radio value={true}>Yes</Radio>
+            <Radio value={false}>No</Radio>
+            <Radio value="unsure">Unsure</Radio>
+          </Radio.Group>
+        </Form.Item>
+  
+        {usingDonor === true && (
+          <Form.Item
+          label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Donor Options</span>}
+            name="donor_preference"
+            style={{ marginBottom: '20px' }}
+          >
             <Checkbox.Group>
-              <Checkbox value='IVF'>
-                <Popover content={ivfInfo} trigger='hover'>
-                  <span>IVF</span>
-                </Popover>
-              </Checkbox>
-              <Checkbox value="Reciprocal IVF">
-                <Popover content={rIvfInfo} trigger='hover'>
-                  <span>Reciprocal IVF</span>
-                </Popover>
-              </Checkbox>
-              <Checkbox value='IUI'>
-                <Popover content={iuiInfo} trigger='hover'>
-                  <span>IUI</span>
-                </Popover>
-              </Checkbox>
-              <Checkbox value='ICI'>
-                <Popover content={iciInfo} trigger='hover'>
-                  <span>ICI</span>
-                </Popover>
-              </Checkbox>
-              <Checkbox value='Gestational Surrogacy'>
-                <Popover content={gcInfo} trigger='hover'>
-                  <span>Gestational Surrogacy</span>
-                </Popover>
-              </Checkbox>
-              <Checkbox value='Traditional Surrogacy'>
-                <Popover content={tsInfo} trigger='hover'>
-                  <span>Traditional Surrogacy</span>
-                </Popover>
-              </Checkbox>
-              <Checkbox value='Timed-Intercourse'>
-                <Popover content={tiInfo} trigger='hover'>
-                  <span>Timed-Intercourse</span>
-                </Popover>
-              </Checkbox>
-              <Checkbox value='Fertility preservation'>
-                <Popover content={fpInfo} trigger='hover'>
-                  <span>Fertility Preservation</span>
-                </Popover>
-              </Checkbox>
-              <Checkbox value="I don't know can you help me decide?">
-                I don't know can you help me decide?
-              </Checkbox>
+              {[
+                { value: 'Anonymous Donor', label: 'Anonymous sperm/egg/embryo', popover: anonymousDonor },
+                { value: 'Known Donor', label: 'Known sperm/egg/embryo (including partner contributions)', popover: knownDonor },
+              ].map((donorOption) => (
+                <Checkbox value={donorOption.value} key={donorOption.value} style={{ marginBottom: '10px', fontSize: '1rem ' }}>
+                  <Popover content={donorOption.popover} trigger="hover" overlayStyle={{ maxWidth: '300px' }}>
+                    <span
+                      style={{
+                        color: '#007000',
+                        cursor: 'pointer',
+                        transition: 'color 0.3s',
+                      }}
+                      onMouseEnter={(e) => e.target.style.color = '#004d00'}
+                      onMouseLeave={(e) => e.target.style.color = '#007000'}
+                    >
+                      {donorOption.label}
+                    </span>
+                  </Popover>
+                </Checkbox>
+              ))}
             </Checkbox.Group>
           </Form.Item>
-
-          <Form.Item label='Known Fertility Issues' name='selected_fertility_issues' rules={[{ required: true }]}>
-            <Radio.Group onChange={(e) => setKnownFertilityIssues(e.target.value)}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
-              <Radio value={'unsure'}>Unsure</Radio>
-            </Radio.Group>
-          </Form.Item>
-
-          {knownFertilityIssues === true && (
-            <Form.Item label='Please specify' name='known_fertility_issues'>
-              <Input placeholder='List any known fertility concerns here' />
-            </Form.Item>
-          )}
-
-          <Form.Item label='Will you be using a donor?' name='using_donor' rules={[{ required: true }]}>
-            <Radio.Group onChange={(e) => setUsingDonor(e.target.value)}>
-              <Radio value={true}>Yes</Radio>
-              <Radio value={false}>No</Radio>
-              <Radio value={'unsure'}>Unsure</Radio>
-            </Radio.Group>
-          </Form.Item>
-
-          {usingDonor === true && (
-            <Form.Item label="Donor Options" name='donor_preference'>
-              <Checkbox.Group>
-                <Checkbox value='Anonymous Donor'>
-                  <Popover content={anonymousDonor} trigger='hover'>
-                    <span>Anonymous sperm/egg/embryo</span>
-                  </Popover>
-                </Checkbox>
-                <Checkbox value='Known Donor'>
-                  <Popover content={knownDonor} trigger='hover'>
-                    <span>Known sperm/egg/embryo (including partner contributions)</span>
-                  </Popover>
-                </Checkbox>
-              </Checkbox.Group>
-            </Form.Item>
-          )}
-
-          <Button type='primary' htmlType='submit'>Generate Plan</Button>
-
-        </Form>
-      )}
-      {generatedPlan && (
+        )}
+  
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{
+            backgroundColor: '#007000',
+            borderColor: '#007000',
+            color: '#fff',
+            fontWeight: '500',
+            marginTop: '20px',
+          }}
+        >
+          Generate Plan
+        </Button>
+      </Form>
+    )}
+  
+    {generatedPlan && (
       <div>
         <GeneratedPlan plan={generatedPlan} />
-        <Button type="primary" onClick={handleGetNewPlan}>
+        <Button type="primary" onClick={handleGetNewPlan} style={{ marginTop: '20px' }}>
           Get New Plan
         </Button>
       </div>
     )}
-    </>
+  </>
+  
   );
 };
 

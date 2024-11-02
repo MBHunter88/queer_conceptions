@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../context/UserContext';
-import { useNavigate } from 'react-router-dom';
-import { Typography, Button, Card, Spin, Empty } from 'antd';
+import { Typography, Card, Empty } from 'antd';
 
 const { Title, Text, Paragraph } = Typography;
 
