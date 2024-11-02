@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Typography, Button, Layout, Row, Col, Modal } from 'antd';
-import Chatbot from '../components/Chatbot';
+import Chatbot from '../components/ChatBot';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom'
 
