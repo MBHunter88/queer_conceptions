@@ -41,7 +41,10 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
 
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Session expired, please log in again.');
+      Modal.warning({
+        title: 'Session Expired',
+        content: 'Your session has expired. Please log in again.',
+      });
       return;
     }
 
@@ -78,18 +81,26 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
             ...prevUser, 
             ...updatedUser.user,  
           }));
-          // TODO: replace with modal to keep consistency
-          alert('Profile updated successfully!');
-        
+          Modal.success({
+            title: 'Profile Updated',
+            content: 'Your profile has been updated successfully!',
+          });
         } else {
           login(updatedUser);
         }
         closeSignUpModal();
       } else {
-        console.error('Operation failed', response.statusText);
+        Modal.error({
+          title: 'Sign-Up Failed',
+          content: errorData.message || 'An unexpected error occurred. Please try again.',
+        });
       }
     } catch (error) {
       console.error('Error processing request:', error);
+      Modal.error({
+        title: 'Network Error',
+        content: 'Unable to complete the request. Please try again.',
+      });
     }
   };
 
