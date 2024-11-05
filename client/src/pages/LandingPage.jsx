@@ -19,14 +19,17 @@ const LandingPage = () => {
         <div className="landing-page">
        
         <div style={{
-              height: '35vw',
+              height: 'auto',
               padding: '50px 20px',
               background: 'url(pregnancy.jpg) no-repeat center/cover',
               color: '#fff',
               position: 'relative',
               textShadow: '2px 2px 5px rgba(0, 0, 0, 0.7)',
               display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'center',
+              alignItems: 'center',
+              overflow: 'hidden',
               marginLeft: '-2vw',
               marginRight: '-2vw'
             }}>
@@ -37,10 +40,8 @@ const LandingPage = () => {
                 right: 0,
                 bottom: 0,
                 background: 'rgba(0, 0, 0, 0.5)',
-                }}> 
-          </div>
-          
-          <div style={{ position: 'relative', zIndex: 1, maxWidth: "80%", marginTop: '1vw' }}>
+                }}></div>
+          <div style={{ position: 'relative', zIndex: 1, maxWidth: "90%", marginTop: '1vw', padding: "10px" }}>
           <Title level={1}
             style={{
               textAlign: 'center',
@@ -49,35 +50,31 @@ const LandingPage = () => {
             }}>
             Welcome to Queer Conceptions
           </Title>
-          <Space direction='vertical'>
-            <Text style={{
-              fontSize: '1.35rem',
-              lineHeight: '1.75',
-              textAlign: 'center',
-              margin: '0 auto',
-              color: '#fff',
-            }}>
+          <Space direction='vertical'>      
+            <Text  style={{  fontSize: '1.2rem',
+        lineHeight: '1.5',
+        fontWeight: '500',
+        color: 'white',
+        wordWrap: 'break-word', }}>
               Queer Conceptions was created to address the unique challenges faced by LGBTQ+ individuals and families
               as they navigate the journey of family building. We recognize that traditional resources often overlook
               the needs of LGBTQ+ communities, leaving many without the guidance and support they deserve. Our mission
               is to bridge that gap by offering a compassionate, inclusive space that provides clear, comprehensive,
               and accessible information about conception options, legal considerations, medical processes, and emotional support.
             </Text>
-            <Text style={{
-                fontSize: '1.35rem',
-                lineHeight: '1.75',
-                textAlign: 'center',
-                margin: '0 auto',
-                color: '#fff',
-              }}>
+            <Text  style={{  fontSize: '1.2rem',
+        lineHeight: '1.5',
+        fontWeight: '500',
+        color: 'white',
+        wordWrap: 'break-word',}}>
               We understand that the journey to parenthood is deeply personal and often complex. Whether you're pursuing
               IVF, surrogacy, donor conception, or exploring other paths, Queer Conceptions is here to provide the personalized
               resources and step-by-step guidance you need. By bringing together curated information and tailored support,
               we aim to empower LGBTQ+ individuals and families to make informed decisions and navigate
               the family-building process with confidence.
-            </Text>
+            </Text> 
           </Space>
-          </div>
+          </div>   
           </div>
           <Divider  />
           {/* feature sections in vertical layout */}
@@ -136,3 +133,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
