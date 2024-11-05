@@ -4,6 +4,7 @@ import { useModal } from '../context/ModalContext';
 import { Button, Modal, Form, Input } from 'antd';
 
 
+
 /* NOTE: 'Ant Design' form handles the input state with the onFinish attribute 
 to pass values directly into handleLogin */
 
@@ -33,7 +34,13 @@ const LoginModal = () => {
         login(data);
         closeLoginModal()
       } else {
-        console.error('Login failed:', data.message);
+        Modal.warning({
+          title: 'Login failed',
+          content:  <div>
+          <p>Invalid username/password. Please check your credentials and try again.</p>
+        </div>,
+          onOk: () => {},
+        });
       }
     } catch (error) {
       console.error('Error during login:', error);

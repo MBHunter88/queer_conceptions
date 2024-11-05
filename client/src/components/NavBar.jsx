@@ -53,7 +53,7 @@ const Navbar = () => {
         theme="light"
       >
     
-        <Menu.Item key="logo" role="presentation" style={{ marginRight: 'auto', padding: '0 2rem' }}>
+        <Menu.Item key="logo"  style={{ marginRight: 'auto', padding: '0 2rem' }}>
           <Link to="/">
             <img
               src="qclogo.png"
@@ -76,7 +76,7 @@ const Navbar = () => {
           <Link to="/planner" aria-label="Cocneption Planner Page">Conception Planner</Link>
         </Menu.Item>
         <Menu.Item key="chatbot" icon={<OpenAIOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/chatbot" aria-label="Virtual Doula Page">Virtual Doula</Link>
+          <Link to="/chatbot" tabindex="-1" aria-label="Virtual Doula Page">Virtual Doula</Link>
         </Menu.Item>
         {user ? (
           <>
@@ -97,12 +97,12 @@ const Navbar = () => {
         ) : (
           <>
             <Menu.Item key="signup" icon={<UserAddOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-              <Button type="link" aria-haspopup="dialog" onClick={openSignUpModal}>
+              <Button type="link" tabindex="-1" aria-haspopup="dialog" onClick={openSignUpModal}>
                 Sign-Up
               </Button>
             </Menu.Item>
             <Menu.Item key="login" icon={<LoginOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-              <Button type="link" aria-haspopup="dialog" onClick={openLoginModal}>
+              <Button type="link" tabindex="-1" aria-haspopup="dialog" onClick={openLoginModal}>
                 Login
               </Button>
             </Menu.Item>
