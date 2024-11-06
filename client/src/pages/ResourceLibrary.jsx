@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Typography, Form, Input, Layout, Row, Col } from 'antd';
 
-const { Content } = Layout;
+const { Content, Footer } = Layout;
 const { Title, Text } = Typography;
 
 const resources = [
@@ -141,6 +141,9 @@ const ResourceLibrary = () => {
           </Row>
         </div>
       </Content>
+      <Footer style={{ textAlign: 'center', padding: '20px 50px', backgroundColor: '#EEE0CB' }}>
+        BHBH Design ©{new Date().getFullYear()} Created by MJBH
+      </Footer>
     </Layout>
   );
 };

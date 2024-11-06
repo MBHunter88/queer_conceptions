@@ -379,10 +379,16 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
         </Form.Item>
 
         {!isEditMode && (
-          <Form.Item>
+          <Form.Item  rules={[
+            {
+              required: true,
+              message: 'Please agree to continue.'
+            },
+          ]}>
             <Checkbox
               checked={acceptedDisclaimer}
               onChange={(e) => setAcceptedDisclaimer(e.target.checked)}
+              
             >
               I understand that Queer Conceptions is not a substitute for professional medical, legal, or financial advice.
               All information provided is for guidance and educational purposes only. By signing up, 
