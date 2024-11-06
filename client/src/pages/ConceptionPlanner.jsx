@@ -118,14 +118,10 @@ const ConceptionPlanner = () => {
 
           {/* Plan Form Section */}
           <Col span={24}>
-            <Row justify="center" style={{ paddingBottom: '30px' }}>
-            {user ? (
+            <Row justify="center" style={{ textAlign: 'center', paddingBottom: '30px' }}>
+            
                      <PlanForm />
-                   ) : (
-                     <Button onClick={handleShowPlan} type="primary" style={{ padding: '30px 20px', fontSize: '1.2rem', backgroundColor: '#007000', borderColor: '#007000' }}>
-                       Start Now
-                     </Button>
-                   )}
+                 
             </Row>
           </Col>
         </Row>

@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
-import { Card, Button, Modal } from 'antd';
+import { Layout, Card, Button, Modal, Typography, Row, Col } from 'antd';
 import GeneratedPlan from '../components/GeneratedPlan';
 import SignUpModal from '../components/SignUpModal';
 
+const { Content, Footer } = Layout;
+const { Title, Text } = Typography;
+
 const UserProfile = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [showPlan, setShowPlan] = useState(false)
+    const [showPlan, setShowPlan] = useState(false);
     const { user, setUser } = useUser();
 
     if (!user) {
-        return <p>Please log in to view your profile.</p>;
+        return <p style={{ fontSize: '1.2rem', color: '#333', textAlign: 'center' }}>Please log in to view your profile.</p>;
     }
 
-    // Handler to open the edit profile modal
     const handleEditProfile = () => {
         setIsEditModalOpen(true);
     };
 
-    // Handler to close the edit profile modal
     const handleCloseModal = () => {
         setIsEditModalOpen(false);
     };
 
-    // Handler to DELETE user 
     const handleDeleteUser = () => {
         Modal.confirm({
             title: 'Warning',
@@ -33,7 +33,7 @@ const UserProfile = () => {
             cancelText: 'No',
             onOk: async () => {
                 try {
-                    const token = localStorage.getItem('token')
+                    const token = localStorage.getItem('token');
                     const response = await fetch(`${import.meta.env.VITE_URL}/users/delete/${user.id}`, {
                         method: 'DELETE',
                         headers: {
@@ -44,12 +44,13 @@ const UserProfile = () => {
 
                     if (response.ok) {
                         setUser(null);
-                        alert('Account deleted successfully!');
+                        Modal.success({ content: 'Account deleted successfully!' });
                     } else {
-                        alert('Failed to delete account');
+                        Modal.error({ content: 'Failed to delete account' });
                     }
                 } catch (error) {
                     console.error('Error deleting user account:', error);
+                    Modal.error({ content: 'An error occurred while deleting the account.' });
                 }
             },
             onCancel() {
@@ -59,51 +60,109 @@ const UserProfile = () => {
     };
 
     return (
-        <div className={'user-profile'} style={{ padding: '30px', maxWidth: '100%', margin: '0 auto', backgroundColor: '#EEE0CB',borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-  <Card title={<span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Profile</span>} style={{ marginBottom: '20px', maxWidth: '80%',  margin: '0 auto' }}>
-    <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '20px' }}>Welcome {user.name} ({user.pronouns})</h2>
-    <Card type="inner" title={<span style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>User Details</span>} style={{ marginBottom: '20px' }}>
-      <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Email: {user.email}</p>
-      <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Location: {user.location}</p>
-      <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Family Building Plan: {user.family_structure}</p>
-      <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Age: {user.age}</p>
-    </Card>
-    {user.has_partner && (
-      <Card type="inner" title={<span style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Partner Details</span>} style={{ marginBottom: '20px' }}>
-        <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Partner Name: {user.partner_name} ({user.partner_pronouns})</p>
-        <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Partner Identifies As: {user.partner_identifies_as}</p>
-        <p style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Partner Age: {user.partner_age}</p>
-      </Card>
-    )}
-    {user.plan && (
-                    <div style={{ marginTop: '20px' }}>
-                        <p></p>
-                        <Button type="primary" onClick={() => setShowPlan(!showPlan)} style={{ marginBottom: '20px', fontSize: '1rem',  backgroundColor: '#007000',
-            borderColor: '#007000', }}>
-                            {showPlan ? 'Collapse Plan' : 'Show Plan'}
-                        </Button>
-                        {showPlan && <GeneratedPlan />}
-                    </div>
-                )}
-  </Card>
-  <div style={{ textAlign: 'center', padding: '10px 20px'  }}>
-    <Button type="primary" onClick={handleEditProfile} style={{ marginRight: '10px', padding: '10px 20px', fontSize: '1rem',  backgroundColor: '#007000',
-            borderColor: '#007000', }}>
-      Edit Profile
-    </Button>
-    <Button htmlType="submit" onClick={handleDeleteUser} danger style={{ padding: '10px 20px', fontSize: '1rem' }}>
-      Delete Account
-    </Button>
-  </div>
-  {/* Edit Profile Modal (Reusing SignUpModal) */}
-  <SignUpModal
-    isEditMode={true}
-    initialValues={user}
-    isSignUpModalOpen={isEditModalOpen}
-    closeSignUpModal={handleCloseModal}
-  />
-</div>
+        <Layout style={{ backgroundColor: '#EEE0CB', padding: '50px 20px' }}>
+            <Content style={{  padding: '0 20px',   }}>
+                <Row justify="center" style={{marginBottom: '200px'}}>
+                    <Col span={24}>
+                        <Card
+                            title={<Title level={2} style={{ color: '#333'}}>Profile</Title>}
+                            style={{
+                                padding: '20px',
+                                backgroundColor: '#FFF4E0',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                                
+                            }}
+                        >
+                            <Title level={3} style={{ color: '#007000' }}>
+                                Welcome, {user.name} ({user.pronouns})
+                            </Title>
+                            <Card
+                                type="inner"
+                                title={<Text strong style={{ fontSize: '1.25rem', color: '#333' }}>Account Details</Text>}
+                                style={{ marginBottom: '20px' }}
+                            >
+                                <Text>Email: {user.email}</Text><br />
+                                <Text>Location: {user.location}</Text><br />
+                                <Text>Family Building Plan: {user.family_structure}</Text><br />
+                                <Text>Age: {user.age}</Text>
+                            </Card>
 
+                            {user.has_partner && (
+                                <Card
+                                    type="inner"
+                                    title={<Text strong style={{ fontSize: '1.25rem', color: '#333' }}>Partner Details</Text>}
+                                    style={{ marginBottom: '20px' }}
+                                >
+                                    <Text>Partner Name: {user.partner_name} ({user.partner_pronouns})</Text><br />
+                                    <Text>Partner Identifies As: {user.partner_identifies_as}</Text><br />
+                                    <Text>Partner Age: {user.partner_age}</Text>
+                                </Card>
+                            )}
+
+                            {user.plan && (
+                                <div style={{  textAlign: 'center', marginTop: '20px' }}>
+                                    <Button
+                                        type="primary"
+                                        onClick={() => setShowPlan(!showPlan)}
+                                        style={{
+                                            marginBottom: '20px',
+                                            fontSize: '1rem',
+                                            backgroundColor: '#007000',
+                                            borderColor: '#007000',
+                                            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                                        }}
+                                    >
+                                        {showPlan ? 'Collapse Plan' : 'Show Plan'}
+                                    </Button>
+                                    {showPlan && <GeneratedPlan />}
+                                </div>
+                            )}
+
+                            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                                <Button
+                                    type="primary"
+                                    onClick={handleEditProfile}
+                                    style={{
+                                        marginRight: '10px',
+                                        padding: '10px 20px',
+                                        fontSize: '1rem',
+                                        backgroundColor: '#007000',
+                                        borderColor: '#007000',
+                                    }}
+                                >
+                                    Edit Profile
+                                </Button>
+                                <Button
+                                    danger
+                                    onClick={handleDeleteUser}
+                                    style={{
+                                        padding: '10px 20px',
+                                        fontSize: '1rem',
+                                        backgroundColor: '#ffff',
+                                        borderColor: '#007000',
+                                    }}
+                                >
+                                    Delete Account
+                                </Button>
+                            </div>
+                        </Card>
+                    </Col>
+                </Row>
+           
+
+            {/* Edit Profile Modal (Reusing SignUpModal) */}
+            <SignUpModal
+                isEditMode={true}
+                initialValues={user}
+                isSignUpModalOpen={isEditModalOpen}
+                closeSignUpModal={handleCloseModal}
+            />
+             <Footer style={{ textAlign: 'center', padding: '30px 50px', backgroundColor: '#EEE0CB' }}>
+        BHBH Design ©{new Date().getFullYear()} Created by MJBH
+      </Footer>
+      </Content>
+        </Layout>
     );
 };
 

@@ -6,30 +6,23 @@ import GeneratedPlan from './GeneratedPlan';
 
 
 const PlanForm = () => {
+  const { user, setUser } = useUser();
+  const [generatedPlan, setGeneratedPlan] = useState(user?.plan || null);
+  const [showForm, setShowForm] = useState(false)
   const [usingDonor, setUsingDonor] = useState(false);
   const [knownFertilityIssues, setKnownFertilityIssues] = useState(false);
-  const [generatedPlan, setGeneratedPlan] = useState(null);
-  const [showForm, setShowForm] = useState(false)
-  const { user, setUser } = useUser();
+ 
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
   //const hasWarnedRef = useRef(false);
 
   //user must be logged in to generate plan
  
-    const handleShowForm = () => {
-      if (!user) {
-        // Show warning modal if the user is not logged in
-        Modal.warning({
-          title: 'Login Required',
-          content: 'Please sign up or login to generate your conception plan.',
-          onOk: () => {
-            navigate('/');
-          },
-        });
-      } else {
-        setShowForm(true);
-      }
+    const handleShowLoginPrompt = () => {
+      Modal.warning({
+        title: 'Login Required',
+        content: 'Please log in or sign up to fill out the form and generate a plan.',
+      });
     };
 
  
@@ -207,35 +200,21 @@ const handleDisclosure = (values) => {
 
   return (
     <>
-    {user?.plan && !showForm && (
-      <>
-        <Button type="primary" onClick={handleGetNewPlan} style={{ marginBottom: '20px',  backgroundColor: '#007000',
-            borderColor: '#007000', }}>
-          Get New Plan
-        </Button>
-        <GeneratedPlan plan={user.plan} /> <br />
-      </>
-    )}
-  
-    {!showForm && !user?.plan && (
-      <Button type="primary" onClick={handleShowForm}  style={{
-        backgroundColor: '#007000',
-        borderColor: '#007000',
-        color: '#fff',
-        fontWeight: '500',
-        marginTop: '20px',
-        textAlign: 'center'
-      }}>
-        Start Conception Plan
-      </Button>
-    )}
-  
-    {showForm && !generatedPlan && user && (
+  {!generatedPlan  && (
+  <div onClick={!user ? handleShowLoginPrompt : undefined} style={{ cursor: !user ? 'pointer' : 'auto' }}>
       <Form
         onFinish={handleDisclosure}
         data-testid="plan-form"
         layout="vertical"
-        style={{ width: '100%', padding: '30px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: '#ffff' }}
+        style={{
+          width: '100%',
+          padding: '30px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          backgroundColor: '#ffffff',
+          pointerEvents: user ? 'auto' : 'none', 
+          opacity: user ? 1 : 0.5, 
+        }}
+        onClick={!user ? handleShowLoginPrompt : undefined}
       >
         <Form.Item
           label={<span style={{ fontSize: '1rem', fontWeight: 'bold' }}>Timeline</span>}
@@ -403,8 +382,8 @@ const handleDisclosure = (values) => {
           Generate Plan
         </Button>
       </Form>
-    )}
-  
+    </div>
+  )}
     {generatedPlan && (
       <div>
         <GeneratedPlan plan={generatedPlan} />
