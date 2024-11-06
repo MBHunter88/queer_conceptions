@@ -131,6 +131,14 @@ const LandingPage = () => {
       
       <Footer style={{ textAlign: 'center', padding: '20px 50px', backgroundColor: '#EEE0CB' }}>
         BHBH Design ©{new Date().getFullYear()} Created by MJBH
+        <br></br>
+        Read more about our 
+        <a
+            href="/privacy-policy"
+            style={{ marginLeft: '5px', color: '#1890ff' }}
+          >
+            Privacy Policy
+          </a> here.
       </Footer>
     </Layout>
   );
