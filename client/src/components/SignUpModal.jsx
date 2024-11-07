@@ -29,79 +29,84 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
     }
   }, [isEditMode, initialValues, form]);
 
-  // Log user in or update based on input
-  const handleSubmit = async (values) => {
-    // Assign custom pronouns if needed
-    if (isCustomPronoun) {
-      values.pronouns = customPronoun;
-    }
-    if (isPartnerCustomPronoun) {
-      values.partner_pronouns = partnerCustomPronoun;
-    }
+ // Log user in or update based on input
+ const handleSubmit = async (values) => {
+  // Assign custom pronouns if needed
+  if (isCustomPronoun) {
+    values.pronouns = customPronoun;
+  }
+  if (isPartnerCustomPronoun) {
+    values.partner_pronouns = partnerCustomPronoun;
+  }
 
-    const token = localStorage.getItem('token');
-    if (!token) {
-      Modal.warning({
-        title: 'Session Expired',
-        content: 'Your session has expired. Please log in again.',
+  try {
+    let response;
+
+    if (isEditMode) {
+      //make sure user has token if updating profile
+      const token = localStorage.getItem('token');
+      if (!token) {
+        Modal.warning({
+          title: 'Session Expired',
+          content: 'Your session has expired. Please log in again.',
+        });
+        return;
+      }
+      // PATCH request for editing the profile
+      response = await fetch(`${import.meta.env.VITE_URL}/users/update/${initialValues.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(values),
       });
-      return;
+    } else {
+      // POST request for signing up
+      response = await fetch(`${import.meta.env.VITE_URL}/users/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
     }
 
-    try {
-      let response;
-      
+    if (response.ok) {
+      const updatedUser = await response.json();
+
       if (isEditMode) {
-        // PATCH request for editing the profile
-        response = await fetch(`${import.meta.env.VITE_URL}/users/update/${initialValues.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(values),
+        setUser((prevUser) => ({
+          ...prevUser,
+          ...updatedUser.user,
+        }));
+        Modal.success({
+          title: 'Profile Updated',
+          content: 'Your profile has been updated successfully!',
         });
       } else {
-        // POST request for signing up
-        response = await fetch(`${import.meta.env.VITE_URL}/users/signup`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
+        login(updatedUser);
       }
+      closeSignUpModal();
+    } else {
+      const errorData = await response.json();
+      // Check for duplicate email error and provide a custom message
+      const isDuplicateEmailError = errorData.message && errorData.message.includes("duplicate key value violates unique constraint \"email\"");
 
-      if (response.ok) {
-        const updatedUser = await response.json();
-       
-        if (isEditMode) {
-          setUser((prevUser) => ({
-            ...prevUser, 
-            ...updatedUser.user,  
-          }));
-          Modal.success({
-            title: 'Profile Updated',
-            content: 'Your profile has been updated successfully!',
-          });
-        } else {
-          login(updatedUser);
-        }
-        closeSignUpModal();
-      } else {
-        Modal.error({
-          title: 'Sign-Up Failed',
-          content: errorData.message || 'An unexpected error occurred. Please try again.',
-        });
-      }
-    } catch (error) {
-      console.error('Error processing request:', error);
       Modal.error({
-        title: 'Network Error',
-        content: 'Unable to complete the request. Please try again.',
+        title: 'Sign-Up Failed',
+        content: isDuplicateEmailError ? 'This email address is already in use. Please use a different email or log in if you already have an account.' : errorData.message || 'An unexpected error occurred. Please try again.',
       });
     }
-  };
+  } catch (error) {
+    console.error('Error processing request:', error);
+    Modal.error({
+      title: 'Network Error',
+      content: 'Unable to complete the request. Please try again.',
+    });
+  }
+};
+
 
   const familyPlanOptions = hasPartner
   ? [
