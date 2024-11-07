@@ -29,7 +29,7 @@ const LoginModal = () => {
       if (response.ok) {
         // Store the JWT token in local storage
         localStorage.setItem('token', data.token);
-        console.log('Login successful:', data);
+        console.log('Login successful.');
         // Save user data and modal state to context
         login(data);
         closeLoginModal()
