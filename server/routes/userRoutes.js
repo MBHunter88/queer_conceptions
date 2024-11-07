@@ -218,6 +218,7 @@ router.patch('/update/:id', verifyToken, async (req, res) => {
 router.delete('/delete/:id', verifyToken, async (req, res) => {
   const { id } = req.params;
   try {
+    await db.query('DELETE FROM conception_plan WHERE user_id = $1', [id]);
     await db.query('DELETE FROM users WHERE user_id=$1', [id]);
     res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {

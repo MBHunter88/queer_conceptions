@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Typography, Form, Input, Layout, Row, Col } from 'antd';
 
-const { Content } = Layout;
+const { Content, Footer } = Layout;
 const { Title, Text } = Typography;
 
 const resources = [
@@ -50,14 +50,14 @@ const ResourceLibrary = () => {
 
 
   return (
-    <Layout style={{backgroundColor: '#EEE0CB',  marginLeft: '-1vw', marginRight: '-1vw', padding: '50px 20px'}}>
-      <Content style={{ height: '100%', padding: '50px 20px' }}>
+    <Layout style={{backgroundColor: '#EEE0CB', padding: '50px 0px'}}>
+      <Content style={{  padding: '0 20px' }}>
         <div className="resource-library">
 
           {/* Top Div with Background */}
           <Row gutter={[0, 40]} justify="center">
             <div style={{
-              height: '450px',
+              height: 'auto',
               padding: '50px 20px',
               background: 'url(RL_Hero.jpg) no-repeat center/cover',
               color: '#fff',
@@ -65,8 +65,8 @@ const ResourceLibrary = () => {
               textShadow: '2px 2px 5px rgba(0, 0, 0, 0.7)',
               display: 'flex',
               justifyContent: 'center',
-              marginLeft: '-2vw',
-              marginRight: '-2vw'
+              width: '100vw',
+              margin: '0 -20px',
             }}>
               <div style={{
                 position: 'absolute',
@@ -76,8 +76,16 @@ const ResourceLibrary = () => {
                 bottom: 0,
                 background: 'rgba(0, 0, 0, 0.5)'
               }}></div>
-              <div style={{ position: 'relative', zIndex: 1, maxWidth: "70%", marginTop: '1vw' }}>
-                <Text style={{ fontSize: '1.75vw', lineHeight: '1.5', fontWeight: '500', color: 'white' }}>
+              <div style={{  
+                position: 'relative',
+                zIndex: 1,
+                maxWidth: '70%',
+                textAlign: 'justify', }}>
+                <Title  style={{
+                  fontWeight: 'bold',
+                  color: '#fff',
+                }}>Explore More...</Title>
+                <Text style={{ fontSize: '1.75rem', lineHeight: '1.5', fontWeight: '500', color: 'white',  textAlign: 'justify' }}>
                   Our Resource Library is here to support you every step of the way on your family-building journey.
                   Explore articles, guides, and helpful tools specifically designed for LGBTQ+ individuals and families.
                   Whether you're looking for medical information, legal guidance, or community support, we've compiled
@@ -111,7 +119,8 @@ const ResourceLibrary = () => {
                       borderRadius: '10px', 
                       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                       transition: 'transform 0.2s',
-                      minHeight: '100%'
+                      minHeight: '100%',
+                      textAlign: 'justify'
                     }}
                     bodyStyle={{ padding: '20px' }}
                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
@@ -132,6 +141,9 @@ const ResourceLibrary = () => {
           </Row>
         </div>
       </Content>
+      <Footer style={{ textAlign: 'center', padding: '20px 50px', backgroundColor: '#EEE0CB' }}>
+        BHBH Design ©{new Date().getFullYear()} Created by MJBH
+      </Footer>
     </Layout>
   );
 };

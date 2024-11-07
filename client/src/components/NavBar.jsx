@@ -7,7 +7,6 @@ import SignUpModal from './SignUpModal';
 import { useModal } from '../context/ModalContext';
 import { Menu, Button, Avatar, Space } from 'antd';
 import {
-  UserOutlined,
   HomeOutlined,
   BookOutlined,
   LoginOutlined,
@@ -41,10 +40,12 @@ const Navbar = () => {
         mode="horizontal"
         defaultSelectedKeys={['home']}
         style={{
-          lineHeight: '3.5vw',
+          minWidth: '100vw',
+          margin: 0,
+          padding: '0 1rem',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'flex-start',
+          justifyContent: 'space-between',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
           position: 'sticky',
           top: 0,
@@ -53,56 +54,55 @@ const Navbar = () => {
         theme="light"
       >
     
-        <Menu.Item key="logo" role="presentation" style={{ marginRight: 'auto', padding: '0 2rem' }}>
+        <Menu.Item key="logo"  style={{ marginRight: 'auto', paddingLeft: 0, marginTop: '1rem' }}>
           <Link to="/">
             <img
               src="qclogo.png"
               alt="Queer Conceptions Logo"
               style={{
-                height: '3.5vw',
+                height: '3vw',
                 width: 'auto',
-                transition: 'transform 0.3s ease',
               }}
             />
           </Link>
         </Menu.Item>
-        <Menu.Item key="home" aria-current={window.location.pathname === '/' ? 'page' : undefined} icon={<HomeOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/" aria-label="Home Page">Home</Link>
+        <Menu.Item key="home" aria-current={window.location.pathname === '/' ? 'page' : undefined} icon={<HomeOutlined  style={{ color: '#000' }} />} style={{ fontSize: '1.2rem'}}>
+          <Link  style={{ color: '#000' }} to="/" aria-label="Home Page" >Home</Link>
         </Menu.Item>
-        <Menu.Item key="resources" icon={<BookOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/resources" aria-label="Resource Library Page">Resource Library</Link>
+        <Menu.Item key="resources" icon={<BookOutlined  style={{ color: '#000' }} />} style={{ fontSize: '1.2rem'}}>
+          <Link  style={{ color: '#000' }} to="/resources" aria-label="Resource Library Page">Resource Library</Link>
         </Menu.Item>
-        <Menu.Item key="conception-planner"  icon={<ProfileOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/planner" aria-label="Cocneption Planner Page">Conception Planner</Link>
+        <Menu.Item key="conception-planner"  icon={<ProfileOutlined  style={{ color: '#000' }} />} style={{ fontSize: '1.2rem' }}>
+          <Link  style={{ color: '#000' }} to="/planner" aria-label="Cocneption Planner Page">Conception Planner</Link>
         </Menu.Item>
-        <Menu.Item key="chatbot" icon={<OpenAIOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-          <Link to="/chatbot" aria-label="Virtual Doula Page">Virtual Doula</Link>
+        <Menu.Item key="chatbot" icon={<OpenAIOutlined  style={{ color: '#000' }} />} style={{ fontSize: '1.2rem' }}>
+          <Link  style={{ color: '#000' }} to="/chatbot" tabindex="-1" aria-label="Virtual Doula Page">Virtual Doula</Link>
         </Menu.Item>
         {user ? (
           <>
-            <Menu.Item key="profile" icon={<UserOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-              <Link to="/profile">
+            <Menu.Item key="profile" style={{ fontSize: '1.2rem' }}>
+              <Link  style={{ color: '#000' }} to="/profile">
                 <Space>
-                  <Avatar aria-hidden="true">{user.name[0]}</Avatar>
+                  <Avatar  style={{ color: '#000' }} aria-hidden="true">{user.name[0]}</Avatar>
                   Welcome, {user.name}!
                 </Space>
               </Link>
             </Menu.Item>
-            <Menu.Item key="logout" aria-label="Logout" icon={<LogoutOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-              <Button type="link" onClick={handleLogout}>
+            <Menu.Item key="logout" aria-label="Logout" icon={<LogoutOutlined />} style={{ fontSize: '1.2rem'}}>
+              <Button  style={{ color: '#000' }} type="link" onClick={handleLogout}>
                 Logout
               </Button>
             </Menu.Item>
           </>
         ) : (
           <>
-            <Menu.Item key="signup" icon={<UserAddOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-              <Button type="link" aria-haspopup="dialog" onClick={openSignUpModal}>
+            <Menu.Item key="signup" icon={<UserAddOutlined />} style={{ fontSize: '1.2rem', color: '#007000' }}>
+              <Button type="link" tabindex="-1" aria-haspopup="dialog" onClick={openSignUpModal} style={{ color: '#007000 '}}>
                 Sign-Up
               </Button>
             </Menu.Item>
-            <Menu.Item key="login" icon={<LoginOutlined />} style={{ fontSize: '1.25rem', padding: '0 2rem' }}>
-              <Button type="link" aria-haspopup="dialog" onClick={openLoginModal}>
+            <Menu.Item key="login" icon={<LoginOutlined />} style={{ fontSize: '1.2rem',  color: '#007000'}}>
+              <Button type="link" tabindex="-1" aria-haspopup="dialog" onClick={openLoginModal} style={{ color: '#007000 '}}>
                 Login
               </Button>
             </Menu.Item>

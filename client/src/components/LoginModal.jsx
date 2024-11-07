@@ -4,6 +4,7 @@ import { useModal } from '../context/ModalContext';
 import { Button, Modal, Form, Input } from 'antd';
 
 
+
 /* NOTE: 'Ant Design' form handles the input state with the onFinish attribute 
 to pass values directly into handleLogin */
 
@@ -28,15 +29,25 @@ const LoginModal = () => {
       if (response.ok) {
         // Store the JWT token in local storage
         localStorage.setItem('token', data.token);
-        console.log('Login successful:', data);
+        console.log('Login successful.');
         // Save user data and modal state to context
         login(data);
         closeLoginModal()
       } else {
-        console.error('Login failed:', data.message);
+        Modal.warning({
+          title: 'Login failed',
+          content:  <div>
+          <p>Invalid username/password. Please check your credentials and try again.</p>
+        </div>,
+          onOk: () => {},
+        });
       }
     } catch (error) {
       console.error('Error during login:', error);
+      Modal.error({
+        title: 'Network Error',
+        content: 'There was a problem connecting to the server. Please try again.',
+      });
     }
   };
 
