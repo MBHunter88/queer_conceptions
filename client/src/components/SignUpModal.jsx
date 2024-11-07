@@ -74,7 +74,6 @@ const SignUpModal = ({ isEditMode = false, initialValues = {}, isSignUpModalOpen
 
       if (response.ok) {
         const updatedUser = await response.json();
-        console.log('User:', updatedUser);
        
         if (isEditMode) {
           setUser((prevUser) => ({

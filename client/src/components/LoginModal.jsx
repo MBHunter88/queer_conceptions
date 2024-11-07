@@ -43,6 +43,7 @@ const LoginModal = () => {
         });
       }
     } catch (error) {
+      console.error('Error during login:', error);
       Modal.error({
         title: 'Network Error',
         content: 'There was a problem connecting to the server. Please try again.',
