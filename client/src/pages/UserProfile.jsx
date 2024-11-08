@@ -34,7 +34,7 @@ const UserProfile = () => {
             onOk: async () => {
                 try {
                     const token = localStorage.getItem('token');
-                    const response = await fetch(`${import.meta.env.VITE_URL}/users/delete/${user.id}`, {
+                    const response = await fetch(`${import.meta.env.VITE_URL}/users/delete/${user.id || user.user_id}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',

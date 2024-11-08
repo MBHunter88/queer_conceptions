@@ -12,6 +12,7 @@ export const UserProvider = ({ children }) => {
 // Set user data after successful login
   const login = (userData) => {
     localStorage.setItem('token', userData.token)
+    localStorage.setItem('user', JSON.stringify(userData.user));
     setUser({
       ...userData.user,
     });
@@ -28,7 +29,9 @@ export const UserProvider = ({ children }) => {
       okType: 'danger',
       cancelText: 'No',
       onOk: () => {
-        setUser(null);;
+        setUser(null);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
       },
       onCancel: () => {
         console.log('User declined to logout');
@@ -37,14 +40,15 @@ export const UserProvider = ({ children }) => {
   }
   
 
-   // Update localStorage whenever user data changes
+  // Load user from localStorage on app load if a token exists
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-  }, [user]);
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, login, logout, setUser}}>
