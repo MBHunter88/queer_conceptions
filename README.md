@@ -67,41 +67,19 @@ Clone the repository:
 `git clone git@github.com:MBHunter88/queer_conceptions.git
 cd queer_conceptions`
 
-Install backend dependencies:
+Run the setup script:
 
-`cd server
-npm install`
+`./scripts/local_setup.sh`
 
-Install frontend dependencies:
-
-`cd ../client
-npm install`
-
-Set up environment variables:
-
-Create a `.env `file in the root directory and add the following values:
-
-`DATABASE_URI=your_postgres_database_url
-OPENAI_API_KEY=your_openai_api_key
-PORT=8080
-SECRET="this is your secret"
-JWT_SECRET=your_secret_key_here`
-
-Run database migrations:
-
-Ensure your PostgreSQL server is running and execute:
-
-`npm run migrate`
+This script installs dependencies, copies example environment files, and runs the initial database migration. After it completes, edit `server/.env` and `client/.env` with your real values.
 
 Start the backend server:
 
-`cd server
-npm start`
+`npm start --prefix server`
 
 Start the development server:
 
-`cd ../client
-npm run dev`
+`npm run dev --prefix client`
 
 Open your browser and go to `localhost`.
 
