@@ -133,7 +133,7 @@ router.post('/signup', async (req, res) => {
      // Generate JWT token
      const token = jwt.sign(
       {
-        id: newUser.id,
+        userId: newUser.user_id,
         email: newUser.email,
       },
       process.env.JWT_SECRET,
