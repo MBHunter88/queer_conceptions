@@ -1,7 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import db from '../db/db_connections.js'
+import db from '../db/db_connections.js';
 import OpenAI from 'openai';
+import verifyToken from '../middleware/jwtMiddleware.js';
 
 dotenv.config();
 const router = express.Router();
@@ -12,7 +13,7 @@ const openai = new OpenAI({
 
 //TODO: finalize prompt for plan generation
 //POST /plan/generate/:id
-router.post('/generate/:id', async (req, res) => {
+router.post('/generate/:id', verifyToken, async (req, res) => {
   const { id } = req.params;
   const { method_choice,
     donor_preference,
@@ -142,7 +143,7 @@ router.post('/generate/:id', async (req, res) => {
 
 
 //chatbot endpoint
-router.post('/chatbot', async (req, res) => {
+router.post('/chatbot', verifyToken, async (req, res) => {
   try {
     const { userMessages } = req.body;
 
