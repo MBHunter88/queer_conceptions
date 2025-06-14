@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import db from '../db/db_connections.js';
 import OpenAI from 'openai';
 import verifyToken from '../middleware/jwtMiddleware.js';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 const router = express.Router();
@@ -143,7 +144,13 @@ router.post('/generate/:id', verifyToken, async (req, res) => {
 
 
 //chatbot endpoint
-router.post('/chatbot', verifyToken, async (req, res) => {
+const chatbotLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per windowMs
+  message: { error: 'Too many requests, please try again later.' },
+});
+
+router.post('/chatbot', verifyToken, chatbotLimiter, async (req, res) => {
   try {
     const { userMessages } = req.body;
 
