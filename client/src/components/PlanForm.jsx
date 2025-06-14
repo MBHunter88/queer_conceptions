@@ -130,23 +130,23 @@ const PlanForm = () => {
   const timelineOptions = [
     {
       value: '6 months',
-      lable: <span>6 months</span>
+      label: <span>6 months</span>
     },
     {
       value: '1 year',
-      lable: <span>1 year</span>
+      label: <span>1 year</span>
     },
     {
       value: '2 years',
-      lable: <span>2 years</span>
+      label: <span>2 years</span>
     },
     {
       value: '5+ years',
-      lable: <span>5+ years</span>
+      label: <span>5+ years</span>
     },
     {
       value: "I don't know",
-      lable: <span>I don't know</span>
+      label: <span>I don't know</span>
     }
   ]
   //<-----------------------additional event handler functions----------------------->//
