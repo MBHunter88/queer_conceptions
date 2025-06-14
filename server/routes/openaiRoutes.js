@@ -12,9 +12,16 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Limit plan generation to avoid abuse of the OpenAI API
+const planGenerationLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  message: { error: 'Too many plan generation requests. Please try again later.' },
+});
+
 //TODO: finalize prompt for plan generation
 //POST /plan/generate/:id
-router.post('/generate/:id', verifyToken, async (req, res) => {
+router.post('/generate/:id', verifyToken, planGenerationLimiter, async (req, res) => {
   const { id } = req.params;
   const { method_choice,
     donor_preference,

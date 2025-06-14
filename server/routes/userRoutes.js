@@ -4,6 +4,7 @@ import db from '../db/db_connections.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import verifyToken from '../middleware/jwtMiddleware.js'
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 const router = express.Router();
@@ -12,8 +13,21 @@ const router = express.Router();
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Rate limiters to prevent brute-force attacks
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  message: { error: 'Too many login attempts. Please try again later.' },
+});
+
+const signupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  message: { error: 'Too many accounts created. Please try again later.' },
+});
+
 //POST /login - verify user info from db
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -102,7 +116,7 @@ router.post('/login', async (req, res) => {
 });
 
 //POST /signup - add user to db with hashed password
-router.post('/signup', async (req, res) => {
+router.post('/signup', signupLimiter, async (req, res) => {
   const {
     email,
     password,
