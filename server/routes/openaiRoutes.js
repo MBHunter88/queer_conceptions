@@ -32,7 +32,7 @@ router.post('/generate/:id', async (req, res) => {
     }
     const user = userProfile.rows[0];
 
-    // AI inegration
+    // AI integration
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
