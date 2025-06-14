@@ -2,6 +2,9 @@
 set -e
 set -x
 
+echo "Current directory: $(pwd)"
+ls -la
+
 # Install and build the frontend
 cd ../client
 npm install
@@ -11,6 +14,7 @@ npm run build
 rm -rf ../server/client-dist
 cp -r dist ../server/client-dist
 
-# Go back to server and install backend dependencies
-cd ../server
+# Go back to root, then into server to install backend deps
+cd ..
+cd server
 npm install
